@@ -1,0 +1,65 @@
+<header class="fixed top-0 left-0 w-full bg-white/80 backdrop-blur-md shadow-sm z-50 border-b border-gray-100">
+  <div class="max-w-7xl mx-auto flex justify-between items-center px-6 py-4">
+    <!-- Logo -->
+    <a routerLink="/" class="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent hover:from-blue-700 hover:to-purple-700 transition-all duration-300">
+      SalonPortal
+    </a>
+    
+    <!-- Navigation for desktop -->
+    <nav class="hidden md:flex items-center gap-4">
+      <a routerLink="/login" 
+         class="px-6 py-2.5 text-gray-700 hover:text-blue-600 font-medium transition-all duration-200 rounded-lg hover:bg-blue-50">
+        Sign In
+      </a>
+      <a routerLink="/register" 
+         class="px-6 py-2.5 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-medium rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
+        Sign Up
+      </a>
+    </nav>
+    
+    <!-- Hamburger Menu Icon for mobile -->
+    <button 
+      class="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500" 
+      (click)="toggleMenu()"
+      [attr.aria-label]="mobileMenuOpen ? 'Close menu' : 'Open menu'"
+      [attr.aria-expanded]="mobileMenuOpen">
+      <svg 
+        class="w-6 h-6 text-gray-800 transition-transform duration-300"
+        [class.rotate-90]="mobileMenuOpen"
+        fill="none" 
+        stroke="currentColor" 
+        viewBox="0 0 24 24">
+        <path 
+          *ngIf="!mobileMenuOpen"
+          stroke-linecap="round" 
+          stroke-linejoin="round" 
+          stroke-width="2" 
+          d="M4 6h16M4 12h16M4 18h16"/>
+        <path 
+          *ngIf="mobileMenuOpen"
+          stroke-linecap="round" 
+          stroke-linejoin="round" 
+          stroke-width="2" 
+          d="M6 18L18 6M6 6l12 12"/>
+      </svg>
+    </button>
+  </div>
+  
+  <!-- Mobile Menu -->
+  <div 
+    *ngIf="mobileMenuOpen" 
+    class="md:hidden bg-white/95 backdrop-blur-md border-t border-gray-100 shadow-lg animate-slideDown">
+    <nav class="px-6 py-6 space-y-3">
+      <a routerLink="/login" 
+         (click)="toggleMenu()"
+         class="block px-6 py-3 text-gray-700 hover:text-blue-600 font-medium rounded-lg hover:bg-blue-50 transition-all duration-200">
+        Sign In
+      </a>
+      <a routerLink="/register" 
+         (click)="toggleMenu()"
+         class="block px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-medium rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-200 shadow-md text-center">
+        Sign Up
+      </a>
+    </nav>
+  </div>
+</header>

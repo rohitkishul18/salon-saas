@@ -1,0 +1,31 @@
+:host {
+  display: block;
+  padding-bottom: 120px; // space for fixed button
+  background-color: #f9fafb; // Light bg for modern feel
+}
+
+section {
+  animation: fadeIn 0.6s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+// Card enhancements for readability
+:host ::ng-deep {
+  .card-content {
+    line-height: 1.6; // Improved readability
+  }
+}
+
+// Button gradient support
+.bg-gradient-to-r {
+  background: linear-gradient(to right, #2563eb, #7c3aed);
+}
+
+// Ensure high contrast
+.text-gray-900 { color: #111827; }
+.text-gray-600 { color: #4b5563; }
+.text-gray-700 { color: #374151; }
