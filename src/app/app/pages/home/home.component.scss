@@ -1,31 +1,42 @@
 :host {
   display: block;
-  padding-bottom: 120px; // space for fixed button
-  background-color: #f9fafb; // Light bg for modern feel
+  background-color: #f9fafb;
 }
 
-section {
-  animation: fadeIn 0.6s ease-in-out;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-// Card enhancements for readability
-:host ::ng-deep {
-  .card-content {
-    line-height: 1.6; // Improved readability
+@keyframes fadeInUp {
+  from { 
+    opacity: 0; 
+    transform: translateY(30px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0); 
   }
 }
 
-// Button gradient support
-.bg-gradient-to-r {
-  background: linear-gradient(to right, #2563eb, #7c3aed);
+.animate-fadeInUp {
+  animation: fadeInUp 1s ease-out forwards;
 }
 
-// Ensure high contrast
-.text-gray-900 { color: #111827; }
-.text-gray-600 { color: #4b5563; }
-.text-gray-700 { color: #374151; }
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0) translateX(-50%);
+  }
+  50% {
+    transform: translateY(-10px) translateX(-50%);
+  }
+}
+
+.animate-bounce {
+  animation: bounce 2s ease-in-out infinite;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Card hover glow effect */
+.group:hover {
+  box-shadow: 0 20px 60px -12px rgba(99, 102, 241, 0.3);
+}

@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
-import { BranchComponent } from './branch.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { BranchRoutingModule } from './branch-routing.module';
 import { HttpClientModule } from '@angular/common/http';
 
-
+import { BranchRoutingModule } from './branch-routing.module';
+import { BranchComponent } from './branch.component';
+import { SharedModule } from '../../shared/shared.module';
 
 @NgModule({
   declarations: [
@@ -14,10 +14,11 @@ import { HttpClientModule } from '@angular/common/http';
   imports: [
     CommonModule,
     FormsModule,
-    BranchRoutingModule,
     ReactiveFormsModule,
-    HttpClientModule 
-  ]
-  ,providers: [DatePipe]
+    HttpClientModule,
+    BranchRoutingModule,
+    SharedModule  // ✅ Import if you need any shared components
+  ],
+  providers: [DatePipe]
 })
 export class BranchModule { }

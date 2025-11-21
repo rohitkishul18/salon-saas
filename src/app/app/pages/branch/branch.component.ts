@@ -7,18 +7,17 @@ import { DatePipe } from '@angular/common';
   selector: 'app-branch',
   templateUrl: './branch.component.html',
   styleUrls: ['./branch.component.scss']
-  // No standalone: true or imports here—handled in BranchModule
 })
 export class BranchComponent implements OnInit {
   branchSlug!: string;
-  branchData: any = null;  // Static for now
-  services: any[] = [];  // Static services
-  minDateTime: string = '';  // For datetime-local min
+  branchData: any = null;
+  services: any[] = [];
+  minDateTime: string = '';
 
   bookingForm: FormGroup;
 
-  private salonId: string = 'static-salon-id';  // Static for testing
-  private locationId: string = 'static-location-id';  // Static for testing
+  private salonId: string = 'static-salon-id';
+  private locationId: string = 'static-location-id';
 
   constructor(
     private route: ActivatedRoute,
@@ -28,7 +27,7 @@ export class BranchComponent implements OnInit {
   ) {
     this.bookingForm = this.fb.group({
       customerName: ['', [Validators.required, Validators.minLength(2)]],
-      customerPhone: ['', [Validators.required, Validators.pattern(/^[6-9]\d{9}$/)]],  // Indian 10-digit
+      customerPhone: ['', [Validators.required, Validators.pattern(/^[6-9]\d{9}$/)]],
       serviceId: ['', Validators.required],
       scheduledAt: ['', Validators.required],
       notes: ['']
@@ -36,15 +35,12 @@ export class BranchComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.minDateTime = new Date(new Date().getTime() + 60 * 60 * 1000).toISOString().slice(0, 16);  // 1 hour from now
+    this.minDateTime = new Date(new Date().getTime() + 60 * 60 * 1000).toISOString().slice(0, 16);
     this.branchSlug = this.route.snapshot.paramMap.get('branchSlug')!;
-    console.log('Branch slug from param:', this.branchSlug);  // Debug: Should log 'baner' etc.
-    
     this.loadStaticBranchData();
   }
 
   private loadStaticBranchData(): void {
-    // Static data based on slug for testing different branches
     const staticBranches: { [key: string]: any } = {
       'baner': {
         _id: 'b1',
@@ -56,7 +52,7 @@ export class BranchComponent implements OnInit {
         reviewCount: 120,
         openingHours: { from: '9:00 AM', to: '9:00 PM' },
         salonName: 'Glow Salon',
-        bannerImage: 'assets/images/sample-banner.jpg'
+        bannerImage: 'https://images.unsplash.com/photo-1562322140-8baeececf3df?w=1600&h=600&fit=crop'
       },
       'kothrud': {
         _id: 'b2',
@@ -68,7 +64,7 @@ export class BranchComponent implements OnInit {
         reviewCount: 85,
         openingHours: { from: '10:00 AM', to: '8:00 PM' },
         salonName: 'Glow Salon',
-        bannerImage: 'assets/images/sample-banner-2.jpg'
+        bannerImage: 'https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=1600&h=600&fit=crop'
       },
       'viman-nagar': {
         _id: 'b3',
@@ -80,18 +76,16 @@ export class BranchComponent implements OnInit {
         reviewCount: 95,
         openingHours: { from: '9:30 AM', to: '10:00 PM' },
         salonName: 'Glow Salon',
-        bannerImage: 'assets/images/sample-banner-3.jpg'
+        bannerImage: 'https://images.unsplash.com/photo-1633681926022-84c23e8cb2d6?w=1600&h=600&fit=crop'
       }
     };
 
-    this.branchData = staticBranches[this.branchSlug] || staticBranches['baner'];  // Default to Baner
+    this.branchData = staticBranches[this.branchSlug] || staticBranches['baner'];
     this.locationId = this.branchData._id;
-    console.log('Loaded branch data:', this.branchData);  // Debug: Confirms data
     this.loadStaticServices();
   }
 
   private loadStaticServices(): void {
-    // Static services (can vary by branch later)
     this.services = [
       { _id: 's1', name: 'Hair Cut', price: 299, durationMinutes: 30, description: 'Classic haircut for all styles' },
       { _id: 's2', name: 'Beard Trim', price: 199, durationMinutes: 20, description: 'Neat beard shaping' },
@@ -118,10 +112,9 @@ export class BranchComponent implements OnInit {
         notes: formData.notes
       };
 
-      console.log('Static Booking submitted:', bookingData);  // For testing
+      console.log('Static Booking submitted:', bookingData);
       alert(`Booking confirmed for ${formData.customerName} on ${this.datePipe.transform(formData.scheduledAt, 'MMM dd, yyyy hh:mm a')}! We'll call you soon.`);
-      this.bookingForm.reset();  // Reset form after submit
-      // this.router.navigate(['/home']);  // Uncomment for production flow
+      this.bookingForm.reset();
     }
   }
 }

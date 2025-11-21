@@ -3,14 +3,21 @@ import { RouterModule, Routes } from '@angular/router';
 
 const routes: Routes = [
   {
-    path: 'home',
-    loadChildren: () => import('./app/pages/home/home.module').then(m => m.HomeModule)
-  },
-  { path: 'branch/:branchSlug', loadChildren: () => import('./app/pages/branch/branch.module').then(m => m.BranchModule) },  // Changed :locationSlug to :branchSlug
-  {
     path: '',
     redirectTo: 'home',
     pathMatch: 'full'
+  },
+  {
+    path: 'home',
+    loadChildren: () => import('./app/pages/home/home.module').then(m => m.HomeModule)
+  },
+  {
+    path: 'branch/:branchSlug',
+    loadChildren: () => import('./app/pages/branch/branch.module').then(m => m.BranchModule)
+  },
+  {
+    path: 'auth',
+    loadChildren: () => import('./app/pages/auth/auth.module').then(m => m.AuthModule)
   },
   {
     path: '**',
@@ -19,7 +26,13 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes, { scrollPositionRestoration: 'enabled' })],
+  imports: [
+    RouterModule.forRoot(routes, {
+      scrollPositionRestoration: 'enabled',
+      anchorScrolling: 'enabled',
+      scrollOffset: [0, 64] // Adjust for fixed header
+    })
+  ],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }

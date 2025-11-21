@@ -1,67 +1,125 @@
-<div class="space-y-10 px-2">
+<div class="min-h-screen bg-gradient-to-b from-gray-50 to-white">
 
   <!-- 🔵 HERO SECTION / MAIN BANNER -->
-  <section class="w-full h-64 md:h-80 rounded-xl overflow-hidden shadow-lg relative">
-    <div class="absolute inset-0 bg-gradient-to-r from-blue-600/20 to-purple-600/20 flex items-center justify-center">
-      <div class="text-center text-white px-4">
-        <h1 class="text-3xl md:text-5xl font-bold mb-4">Welcome to Glow Salon</h1>
-        <p class="text-xl md:text-2xl mb-6">Experience luxury and care at our premium branches across Pune</p>
-        <button 
-          class="bg-white text-blue-600 px-8 py-3 rounded-full font-semibold text-lg hover:bg-gray-100 transition-all duration-300 shadow-lg"
-          routerLink="/services">
-          Explore Services
-        </button>
+  <section class="relative w-full h-[600px] overflow-hidden">
+    <!-- Background Image with Overlay -->
+    <div class="absolute inset-0">
+      <img 
+        src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=1600&h=900&fit=crop"
+        alt="Salon Interior" 
+        class="w-full h-full object-cover"
+      />
+      <div class="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-transparent"></div>
+    </div>
+    
+    <!-- Hero Content -->
+    <div class="relative z-10 h-full flex items-center">
+      <div class="max-w-7xl mx-auto px-6 md:px-12">
+        <div class="max-w-2xl space-y-6 animate-fadeInUp">
+          <h1 class="text-5xl md:text-7xl font-bold text-white leading-tight">
+            Welcome to
+            <span class="block bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+              Glow Salon
+            </span>
+          </h1>
+          <p class="text-xl md:text-2xl text-gray-200 leading-relaxed">
+            Experience luxury and care at our premium branches across Pune
+          </p>
+          <div class="flex flex-wrap gap-4 pt-4">
+            <button 
+              class="group px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold text-lg rounded-full hover:from-blue-700 hover:to-purple-700 transition-all duration-300 shadow-2xl hover:shadow-purple-500/50 hover:scale-105"
+              routerLink="/services">
+              Explore Services
+              <span class="inline-block ml-2 group-hover:translate-x-1 transition-transform">→</span>
+            </button>
+            <button 
+              class="px-8 py-4 bg-white/10 backdrop-blur-md text-white font-semibold text-lg rounded-full border-2 border-white/30 hover:bg-white/20 transition-all duration-300"
+              (click)="scrollToBranches()">
+              View Branches
+            </button>
+          </div>
+        </div>
       </div>
     </div>
-    <img 
-      [src]="heroBannerImage" 
-      alt="Salon Hero Banner" 
-      class="w-full h-full object-cover"
-    />
+    
+    <!-- Scroll Indicator -->
+    <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+      <svg class="w-6 h-6 text-white/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
+      </svg>
+    </div>
+  </section>
+
+  <!-- 🔵 STATS SECTION -->
+  <section class="py-16 bg-white border-y border-gray-100">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+        <div class="text-center space-y-2">
+          <div class="text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+            3
+          </div>
+          <div class="text-gray-600 font-medium">Branches</div>
+        </div>
+        <div class="text-center space-y-2">
+          <div class="text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+            10K+
+          </div>
+          <div class="text-gray-600 font-medium">Happy Clients</div>
+        </div>
+        <div class="text-center space-y-2">
+          <div class="text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+            4.7
+          </div>
+          <div class="text-gray-600 font-medium">Average Rating</div>
+        </div>
+        <div class="text-center space-y-2">
+          <div class="text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+            50+
+          </div>
+          <div class="text-gray-600 font-medium">Services</div>
+        </div>
+      </div>
+    </div>
   </section>
 
   <!-- 🔵 BRANCHES SECTION -->
-  <section>
-    <h2 class="text-3xl font-bold mb-6 text-center text-gray-800">Our Branches</h2>
-    <p class="text-center text-gray-600 mb-8 max-w-2xl mx-auto">Discover our conveniently located branches offering top-notch salon services. Choose your nearest one and book your appointment today.</p>
-
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      <div *ngFor="let branch of branchData" class="bg-white border border-gray-200 rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
-        
-        <!-- Branch Info (No Image) -->
-        <div class="p-6 space-y-4">
-          <h3 class="font-bold text-2xl text-gray-900 leading-tight">{{ branch.name }} Branch</h3>
-          <p class="text-gray-600 text-base leading-relaxed">{{ branch.address }}</p>
-          
-          <div class="flex items-center justify-between pt-3 border-t border-gray-100">
-            <div class="flex items-center gap-2">
-              <span class="font-bold text-xl text-yellow-500">{{ branch.rating }}</span>
-              <span class="text-yellow-400 text-lg">★</span>
-              <span class="text-gray-500 text-sm">({{ branch.reviewCount }} reviews)</span>
-            </div>
-            <span class="text-green-600 font-semibold text-base">Open Now</span> <!-- Dynamic based on hours later -->
-          </div>
-
-          <div class="text-base space-y-2 text-gray-700">
-            <div class="flex items-center gap-3">
-              <span class="material-icons text-lg text-gray-500">phone</span>
-              <span class="font-medium">{{ branch.phone }}</span>
-            </div>
-            <div class="flex items-center gap-3">
-              <span class="material-icons text-lg text-gray-500">access_time</span>
-              <span class="font-medium">{{ branch.openingHours.from }} - {{ branch.openingHours.to }}</span>
-            </div>
-          </div>
-
-          <!-- Visit Branch Button -->
-          <button
-            class="mt-5 w-full py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold text-base rounded-xl hover:from-blue-700 hover:to-purple-700 transition-all duration-300 shadow-md hover:shadow-lg"
-            (click)="visitBranch(branch.slug)">
-            Visit Branch
-          </button>
-        </div>
-
+  <section id="branches" class="py-20 px-6">
+    <div class="max-w-7xl mx-auto">
+      <!-- Section Header -->
+      <div class="text-center mb-16 space-y-4">
+        <h2 class="text-4xl md:text-5xl font-bold text-gray-900">
+          Our <span class="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Branches</span>
+        </h2>
+        <p class="text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
+          Discover our conveniently located branches offering top-notch salon services. Choose your nearest one and book your appointment today.
+        </p>
       </div>
+
+      <!-- Branch Cards Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <app-branch-card 
+          *ngFor="let branch of branchData" 
+          [branch]="branch"
+          (visitBranchClick)="handleVisitBranch($event)">
+        </app-branch-card>
+      </div>
+    </div>
+  </section>
+
+  <!-- 🔵 CTA SECTION -->
+  <section class="py-20 px-6 bg-gradient-to-r from-blue-600 to-purple-600">
+    <div class="max-w-4xl mx-auto text-center space-y-6">
+      <h2 class="text-4xl md:text-5xl font-bold text-white">
+        Ready to Transform Your Look?
+      </h2>
+      <p class="text-xl text-white/90">
+        Book your appointment today and experience the difference
+      </p>
+      <button 
+        class="px-10 py-4 bg-white text-blue-600 font-bold text-lg rounded-full hover:bg-gray-100 transition-all duration-300 shadow-2xl hover:scale-105"
+        routerLink="/register">
+        Get Started Now
+      </button>
     </div>
   </section>
 

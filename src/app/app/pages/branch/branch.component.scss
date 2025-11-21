@@ -1,57 +1,53 @@
 :host {
   display: block;
   padding-top: 80px; // Account for fixed header
-  padding-bottom: 60px;
+  // padding-bottom: 60px;
 }
 
-section {
-  animation: fadeIn 0.4s ease-in-out;
-}
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-form {
-  input, select, textarea {
-    @apply w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all;
-    
-    &:invalid:focus {
-      @apply ring-red-500 border-red-500;
-    }
+@keyframes scaleIn {
+  from { 
+    transform: scale(0);
+    opacity: 0;
   }
-  
-  select {
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
-    background-position: right 0.5rem center;
-    background-repeat: no-repeat;
-    background-size: 1.5em 1.5em;
-    padding-right: 2.5rem;
+  to { 
+    transform: scale(1);
+    opacity: 1;
   }
 }
 
-// Mobile optimizations
-@media (max-width: 640px) {
-  :host {
-    padding-top: 70px;
-  }
-  
-  .grid {
-    grid-template-columns: 1fr;
-  }
-  
-  h1, h2 {
-    @apply text-xl;
-  }
-}
-
-// Custom spinner
-.animate-spin {
-  animation: spin 1s linear infinite;
+.animate-scaleIn {
+  animation: scaleIn 0.3s ease-out forwards;
 }
 
 @keyframes spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+/* Smooth transitions for all interactive elements */
+button, a, input, select, textarea {
+  transition: all 0.3s ease;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, #2563eb, #7c3aed);
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(to bottom, #1d4ed8, #6d28d9);
 }

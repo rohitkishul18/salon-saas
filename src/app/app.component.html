@@ -1,5 +1,9 @@
-<app-header></app-header>
+<ng-container *ngIf="!hideHeaderFooter()">
+  <app-header></app-header>
+</ng-container>
 
 <router-outlet></router-outlet>
 
-<app-footer></app-footer>
+<ng-container *ngIf="!hideHeaderFooter()">
+  <app-footer></app-footer>
+</ng-container>

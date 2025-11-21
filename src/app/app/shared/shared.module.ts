@@ -1,5 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+
+// Shared Components
 import { HeaderComponent } from './header/header.component';
 import { FooterComponent } from './footer/footer.component';
 import { ServiceCardComponent } from './service-card/service-card.component';
@@ -15,11 +18,18 @@ import { ToastComponent } from './toast/toast.component';
     ToastComponent
   ],
   imports: [
-    CommonModule
+    CommonModule,
+    RouterModule  // Add RouterModule for routerLink to work
   ],
   exports: [
+    // Export all components that will be used in other modules
     HeaderComponent,
-    FooterComponent
+    FooterComponent,
+    ServiceCardComponent,
+    BranchCardComponent,
+    ToastComponent,
+    // Export CommonModule so feature modules don't need to import it
+    CommonModule
   ]
 })
 export class SharedModule { }
