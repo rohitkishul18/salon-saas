@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { CustomerAuthService } from '../../../../core/services/customer-auth.service.service';
 
 @Component({
   selector: 'app-login',
@@ -15,11 +16,20 @@ export class LoginComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private router: Router
+    private router: Router,
+    private authService: CustomerAuthService
   ) {
+    // Fixed: Validators should be in an array
     this.loginForm = this.fb.group({
-      emailOrPhone: ['', Validators.required],
-      password: ['', Validators.required],
+      email: ['', [
+        Validators.required,
+        Validators.email,
+        Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)
+      ]],
+      password: ['', [
+        Validators.required,
+        Validators.minLength(6)
+      ]],
       rememberMe: [false]
     });
   }
@@ -36,42 +46,101 @@ export class LoginComponent implements OnInit {
     this.showPassword = !this.showPassword;
   }
 
+  // Helper method to get form control easily
+  get email() {
+    return this.loginForm.get('email');
+  }
+
+  get password() {
+    return this.loginForm.get('password');
+  }
+
+  // Helper methods to check specific validation errors
+  getEmailError(): string {
+    if (this.email?.hasError('required')) {
+      return 'Email is required';
+    }
+    if (this.email?.hasError('email') || this.email?.hasError('pattern')) {
+      return 'Please enter a valid email address';
+    }
+    return '';
+  }
+
+  getPasswordError(): string {
+    if (this.password?.hasError('required')) {
+      return 'Password is required';
+    }
+    if (this.password?.hasError('minLength')) {
+      return 'Password must be at least 6 characters';
+    }
+    return '';
+  }
+
   onSubmit(): void {
+    // Mark all fields as touched to show validation errors
+    this.loginForm.markAllAsTouched();
+
     if (this.loginForm.valid) {
       this.isLoading = true;
       this.errorMessage = '';
 
-      const { emailOrPhone, password, rememberMe } = this.loginForm.value;
+      const { email, password, rememberMe } = this.loginForm.value;
 
-      // TODO: Replace with actual API call
-      // Example: this.authService.login(emailOrPhone, password).subscribe(...)
-      
-      // Simulated API call
-      setTimeout(() => {
-        console.log('Login attempt:', { emailOrPhone, password, rememberMe });
-        
-        // Simulated success
-        const mockToken = 'mock-jwt-token-' + Date.now();
-        const mockUser = {
-          id: 'user123',
-          name: 'John Doe',
-          email: emailOrPhone,
-          phone: '+91 9876543210'
-        };
+      // Prepare login data
+      const loginData = {
+        email,
+        password
+      };
 
-        // Store auth data
-        localStorage.setItem('authToken', mockToken);
-        localStorage.setItem('currentUser', JSON.stringify(mockUser));
-
-        // Navigate to home
-        this.router.navigate(['/']);
-        this.isLoading = false;
-
-        // Simulated error (uncomment to test)
-        // this.errorMessage = 'Invalid credentials. Please try again.';
-        // this.isLoading = false;
-      }, 1500);
+      // Call the API
+      this.authService.login(loginData).subscribe({
+        next: (response: any) => {
+          console.log('Login successful:', response);
+          
+          // Store auth data
+          if (response.data && response.data.token) {
+            localStorage.setItem('authToken', response.data.token);
+            localStorage.setItem('currentUser', JSON.stringify(response.data.customer));
+            localStorage.setItem('salonId', response.data.customer.salonId);
+            
+            // Store remember me preference
+            if (rememberMe) {
+              localStorage.setItem('rememberMe', 'true');
+            }
+            
+            // Navigate to home or dashboard
+            this.router.navigate(['/home']);
+          } else {
+            this.errorMessage = 'Invalid response from server';
+          }
+          
+          this.isLoading = false;
+        },
+        error: (error) => {
+          console.error('Login error:', error);
+          
+          // Handle error response
+          if (error.error && error.error.message) {
+            this.errorMessage = error.error.message;
+          } else if (error.status === 0) {
+            this.errorMessage = 'Unable to connect to server. Please check your internet connection.';
+          } else if (error.status === 401) {
+            this.errorMessage = 'Invalid email or password';
+          } else if (error.status === 500) {
+            this.errorMessage = 'Server error. Please try again later.';
+          } else {
+            this.errorMessage = 'Login failed. Please try again.';
+          }
+          
+          this.isLoading = false;
+        },
+        complete: () => {
+          console.log('Login request completed');
+        }
+      });
+    } else {
+      // Show validation error message
+      this.errorMessage = 'Please fill in all required fields correctly.';
     }
   }
-
 }

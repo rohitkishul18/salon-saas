@@ -8,6 +8,7 @@ import { FooterComponent } from './footer/footer.component';
 import { ServiceCardComponent } from './service-card/service-card.component';
 import { BranchCardComponent } from './branch-card/branch-card.component';
 import { ToastComponent } from './toast/toast.component';
+import { AuthPopupComponent } from './auth-popup/auth-popup.component';
 
 @NgModule({
   declarations: [
@@ -15,7 +16,8 @@ import { ToastComponent } from './toast/toast.component';
     FooterComponent,
     ServiceCardComponent,
     BranchCardComponent,
-    ToastComponent
+    ToastComponent,
+    AuthPopupComponent
   ],
   imports: [
     CommonModule,
@@ -28,6 +30,7 @@ import { ToastComponent } from './toast/toast.component';
     ServiceCardComponent,
     BranchCardComponent,
     ToastComponent,
+    AuthPopupComponent,
     // Export CommonModule so feature modules don't need to import it
     CommonModule
   ]

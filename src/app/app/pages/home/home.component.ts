@@ -51,13 +51,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    // Initialize banner image immediately
     this.rotateBannerImage();
-    
-    // Load data
     this.loadHomeData();
-    
-    // Start rotation
     this.startImageRotation();
   }
 

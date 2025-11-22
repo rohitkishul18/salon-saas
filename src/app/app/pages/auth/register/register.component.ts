@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { Router } from '@angular/router';
+import { CustomerAuthService } from '../../../../core/services/customer-auth.service.service';
 
 @Component({
   selector: 'app-register',
@@ -16,11 +17,16 @@ export class RegisterComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private router: Router
+    private router: Router,
+    private authService: CustomerAuthService
   ) {
     this.registerForm = this.fb.group({
       fullName: ['', [Validators.required, Validators.minLength(2)]],
-      email: ['', [Validators.required, Validators.email]],
+      email: ['', [
+        Validators.required, 
+        Validators.email,
+        Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)
+      ]],
       phone: ['', [Validators.required, Validators.pattern(/^[6-9]\d{9}$/)]],
       password: ['', [Validators.required, Validators.minLength(6)]],
       confirmPassword: ['', Validators.required],
@@ -50,6 +56,31 @@ export class RegisterComponent implements OnInit {
     return password.value === confirmPassword.value ? null : { passwordMismatch: true };
   }
 
+  // Helper methods for form controls
+  get fullName() {
+    return this.registerForm.get('fullName');
+  }
+
+  get email() {
+    return this.registerForm.get('email');
+  }
+
+  get phone() {
+    return this.registerForm.get('phone');
+  }
+
+  get password() {
+    return this.registerForm.get('password');
+  }
+
+  get confirmPassword() {
+    return this.registerForm.get('confirmPassword');
+  }
+
+  get agreeToTerms() {
+    return this.registerForm.get('agreeToTerms');
+  }
+
   togglePasswordVisibility(): void {
     this.showPassword = !this.showPassword;
   }
@@ -59,43 +90,92 @@ export class RegisterComponent implements OnInit {
   }
 
   onSubmit(): void {
+    // Mark all fields as touched to show validation errors
+    this.registerForm.markAllAsTouched();
+
     if (this.registerForm.valid) {
       this.isLoading = true;
       this.errorMessage = '';
 
       const { fullName, email, phone, password } = this.registerForm.value;
 
-      // TODO: Replace with actual API call
-      // Example: this.authService.register(fullName, email, phone, password).subscribe(...)
-      
-      // Simulated API call
-      setTimeout(() => {
-        console.log('Registration attempt:', { fullName, email, phone, password });
-        
-        // Simulated success
-        const mockToken = 'mock-jwt-token-' + Date.now();
-        const mockUser = {
-          id: 'user' + Date.now(),
-          name: fullName,
-          email: email,
-          phone: phone
-        };
+      // Prepare registration data
+      const registerData = {
+        fullName,
+        email,
+        phone,
+        password
+      };
 
-        // Store auth data
-        localStorage.setItem('authToken', mockToken);
-        localStorage.setItem('currentUser', JSON.stringify(mockUser));
+      // Call the API
+      this.authService.register(registerData).subscribe({
+        next: (response: any) => {
+          console.log('Registration successful:', response);
+          
+          // Handle successful registration
+          if (response.success && response.data) {
+            // Store auth data if token is provided
+            if (response.data.token) {
+              localStorage.setItem('authToken', response.data.token);
+            }
+            
+            // Store customer data
+            localStorage.setItem('currentUser', JSON.stringify(response.data));
+            localStorage.setItem('salonId', response.data.salonId);
 
-        // Show success message
-        alert(`Welcome ${fullName}! Your account has been created successfully.`);
+            // Show success message
+            this.errorMessage = '';
+            
+            // Navigate to login or home
+            // Option 1: Navigate to login page
+            // this.router.navigate(['/login'], { 
+            //   queryParams: { registered: 'true', email: email } 
+            // });
 
-        // Navigate to home
-        this.router.navigate(['/']);
-        this.isLoading = false;
-
-        // Simulated error (uncomment to test)
-        // this.errorMessage = 'Email already exists. Please use a different email.';
-        // this.isLoading = false;
-      }, 2000);
+            // Option 2: Navigate to home if token is provided
+            if (response.data.token) {
+              this.router.navigate(['/home']);
+            } else {
+              // Navigate to login if no token
+              this.router.navigate(['/home']);
+            }
+          } else {
+            this.errorMessage = response.message || 'Registration failed. Please try again.';
+          }
+          
+          this.isLoading = false;
+        },
+        error: (error:any) => {
+          console.error('Registration error:', error);
+          
+          // Handle error response
+          if (error.error && error.error.message) {
+            this.errorMessage = error.error.message;
+          } else if (error.status === 0) {
+            this.errorMessage = 'Unable to connect to server. Please check your internet connection.';
+          } else if (error.status === 400) {
+            this.errorMessage = error.error?.message || 'Invalid data provided. Please check your information.';
+          } else if (error.status === 409) {
+            this.errorMessage = 'Email already exists. Please use a different email or login.';
+          } else if (error.status === 500) {
+            this.errorMessage = 'Server error. Please try again later.';
+          } else {
+            this.errorMessage = 'Registration failed. Please try again.';
+          }
+          
+          this.isLoading = false;
+        },
+        complete: () => {
+          console.log('Registration request completed');
+        }
+      });
+    } else {
+      // Show validation error message
+      if (this.registerForm.hasError('passwordMismatch')) {
+        this.errorMessage = 'Passwords do not match. Please check and try again.';
+      } else {
+        this.errorMessage = 'Please fill in all required fields correctly.';
+      }
     }
   }
 }

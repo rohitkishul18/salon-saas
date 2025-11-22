@@ -18,6 +18,7 @@ export class BranchComponent implements OnInit, OnDestroy {
   minDateTime: string = '';
   bookingForm: FormGroup;
   isLoading: boolean = true;
+  isSubmitting: boolean = false; // Add loading state for booking submission
 
   // Banner images for branches
   private branchBannerImages: string[] = [
@@ -160,7 +161,7 @@ export class BranchComponent implements OnInit, OnDestroy {
   }
 
   // -----------------------------------------------------
-  // Submit Booking
+  // Submit Booking - UPDATED WITH API CALL
   // -----------------------------------------------------
   submitBooking() {
     if (this.bookingForm.invalid) {
@@ -173,28 +174,79 @@ export class BranchComponent implements OnInit, OnDestroy {
       return;
     }
 
+    // Prepare booking data according to API requirements
     const bookingData = {
-      ...this.bookingForm.value,
-      branchSlug: this.branchSlug,
-      branchId: this.branchData._id,
-      salonId: this.salonData._id
+      salonId: this.salonData._id,           // Salon ID from loaded data
+      locationId: this.branchData._id,       // Branch/Location ID
+      serviceId: this.bookingForm.value.serviceId,
+      customerName: this.bookingForm.value.customerName,
+      customerPhone: this.bookingForm.value.customerPhone,
+      scheduledAt: new Date(this.bookingForm.value.scheduledAt).toISOString(),
+      notes: this.bookingForm.value.notes || ''
     };
 
-    console.log("Submitting booking:", bookingData);
+    console.log("Submitting booking with data:", bookingData);
     
-    // Show success message for now
-    alert('🎉 Booking Feature Under Development!\n\n' +
-          '✨ Your booking details:\n\n' + 
+    // Set loading state
+    this.isSubmitting = true;
+
+    // Call the booking API
+    this.api.createBooking(bookingData).subscribe({
+      next: (response: any) => {
+        console.log("Booking created successfully:", response);
+        this.isSubmitting = false;
+
+        // Get selected service details for display
+        const selectedService = this.services.find(s => s._id === bookingData.serviceId);
+        const serviceName = selectedService ? selectedService.name : 'Selected Service';
+        const servicePrice = selectedService ? selectedService.price : '';
+
+        // Show success message
+        alert(
+          '🎉 Booking Confirmed Successfully!\n\n' +
+          '✅ Your appointment has been booked.\n\n' +
+          '📋 Booking Details:\n' +
           `👤 Name: ${bookingData.customerName}\n` +
           `📱 Phone: ${bookingData.customerPhone}\n` +
-          `💇 Service: ${this.getSelectedServiceName()}\n` +
-          `📅 Date: ${new Date(bookingData.scheduledAt).toLocaleString()}\n\n` +
-          `📍 Branch: ${this.branchData.name}\n` +
+          `💇 Service: ${serviceName}${servicePrice ? ' - ₹' + servicePrice : ''}\n` +
+          `📅 Date & Time: ${new Date(bookingData.scheduledAt).toLocaleString('en-IN', {
+            dateStyle: 'medium',
+            timeStyle: 'short'
+          })}\n` +
+          `📍 Location: ${this.branchData.name}\n` +
           `🏢 Salon: ${this.salonData.name}\n\n` +
-          'We will implement the booking API soon!');
-    
-    // Reset form after submission
-    this.bookingForm.reset();
+          '📞 Our staff will contact you shortly via phone or email to confirm your appointment.\n\n' +
+          'Thank you for choosing us! 💖'
+        );
+
+        // Reset form after successful booking
+        this.bookingForm.reset();
+        
+        // Reset minimum datetime
+        this.minDateTime = new Date(Date.now() + 60 * 60 * 1000)
+          .toISOString()
+          .slice(0, 16);
+      },
+      error: (error) => {
+        console.error("Booking creation failed:", error);
+        this.isSubmitting = false;
+
+        // Show error message
+        let errorMessage = 'Unable to complete your booking. Please try again.';
+        
+        if (error.error?.message) {
+          errorMessage = error.error.message;
+        } else if (error.status === 400) {
+          errorMessage = 'Invalid booking details. Please check your information and try again.';
+        } else if (error.status === 404) {
+          errorMessage = 'Service or location not found. Please refresh the page and try again.';
+        } else if (error.status === 0) {
+          errorMessage = 'Network error. Please check your internet connection.';
+        }
+
+        alert('❌ Booking Failed\n\n' + errorMessage);
+      }
+    });
   }
 
   // -----------------------------------------------------

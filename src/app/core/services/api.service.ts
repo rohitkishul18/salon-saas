@@ -17,4 +17,9 @@ getBranchBySlug(branchSlug: string) {
   return this.http.get(`${this.apiUrl}/branch/${branchSlug}`);
 }
 
+
+createBooking(bookingData: any) {
+  return this.http.post(`${this.apiUrl}/booking/create`, bookingData);
+}
+
 }
