@@ -7,14 +7,36 @@
     
     <!-- Navigation for desktop -->
     <nav class="hidden md:flex items-center gap-4">
-      <a routerLink="/auth/login" 
-         class="px-6 py-2.5 text-gray-700 hover:text-blue-600 font-medium transition-all duration-200 rounded-lg hover:bg-blue-50">
-        Sign In
-      </a>
-      <a routerLink="/auth/register" 
-         class="px-6 py-2.5 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-medium rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
-        Sign Up
-      </a>
+      <!-- Show Sign In / Sign Up when not logged in -->
+      <ng-container *ngIf="!isLoggedIn">
+        <a routerLink="/auth/login" 
+           class="px-6 py-2.5 text-gray-700 hover:text-blue-600 font-medium transition-all duration-200 rounded-lg hover:bg-blue-50">
+          Sign In
+        </a>
+        <a routerLink="/auth/register" 
+           class="px-6 py-2.5 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-medium rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
+          Sign Up
+        </a>
+      </ng-container>
+      
+      <!-- Show Account and Avatar when logged in -->
+      <ng-container *ngIf="isLoggedIn">
+        <div class="relative group">
+          <a routerLink="/account" class="flex items-center gap-2 text-gray-700 hover:text-blue-600 font-medium transition-all duration-200">
+            <!-- Fallback to initials if no gender -->
+            <span *ngIf="!currentUser?.gender" class="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-full flex items-center justify-center text-sm font-bold shadow-sm">
+              {{ initials }}
+            </span>
+            <span class="flex text-blue-600">{{ currentUser?.fullName }}</span>
+          </a>
+          <!-- Dropdown for logout only -->
+          <div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+            <button (click)="logout()" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-150">
+              Logout
+            </button>
+          </div>
+        </div>
+      </ng-container>
     </nav>
     
     <!-- Hamburger Menu Icon for mobile -->
@@ -50,16 +72,36 @@
     *ngIf="mobileMenuOpen" 
     class="md:hidden bg-white/95 backdrop-blur-md border-t border-gray-100 shadow-lg animate-slideDown">
     <nav class="px-6 py-6 space-y-3">
-      <a routerLink="/login" 
-         (click)="toggleMenu()"
-         class="block px-6 py-3 text-gray-700 hover:text-blue-600 font-medium rounded-lg hover:bg-blue-50 transition-all duration-200">
-        Sign In
-      </a>
-      <a routerLink="/register" 
-         (click)="toggleMenu()"
-         class="block px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-medium rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-200 shadow-md text-center">
-        Sign Up
-      </a>
+      <!-- Show Sign In / Sign Up when not logged in -->
+      <ng-container *ngIf="!isLoggedIn">
+        <a routerLink="/login" 
+           (click)="toggleMenu()"
+           class="block px-6 py-3 text-gray-700 hover:text-blue-600 font-medium rounded-lg hover:bg-blue-50 transition-all duration-200">
+          Sign In
+        </a>
+        <a routerLink="/register" 
+           (click)="toggleMenu()"
+           class="block px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-medium rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-200 shadow-md text-center">
+          Sign Up
+        </a>
+      </ng-container>
+      
+      <!-- Show Account when logged in -->
+      <ng-container *ngIf="isLoggedIn">
+        <a routerLink="/account" 
+           (click)="toggleMenu()"
+           class="block px-6 py-3  items-center gap-3 text-gray-700 hover:text-blue-600 font-medium rounded-lg hover:bg-blue-50 transition-all duration-200">
+          <!-- we want to show cutomer name name and  -->
+         <span *ngIf="!currentUser?.gender" class="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-full flex items-center justify-center text-sm font-bold shadow-sm">
+              {{ initials }}
+            </span>
+             <span class="flex text-blue-600">{{ currentUser?.fullName }}</span>
+        </a>
+        <button (click)="logout(); toggleMenu()" 
+                class="block w-full text-left px-6 py-3 text-gray-700 hover:text-red-600 font-medium rounded-lg hover:bg-red-50 transition-all duration-200">
+          Logout
+        </button>
+      </ng-container>
     </nav>
   </div>
 </header>

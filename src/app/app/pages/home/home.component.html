@@ -1,112 +1,233 @@
-
 <app-auth-popup></app-auth-popup>
 
-<div class="min-h-screen bg-gradient-to-b from-gray-50 to-white">
-
-  <!-- 🔵 HERO SECTION -->
-  <section class="relative w-full h-[600px] overflow-hidden">
-
+<div class="min-h-screen bg-gradient-to-br from-slate-50 via-white to-purple-50">
+  <!-- 🔵 HERO SECTION - Enhanced -->
+  <section class="relative w-full h-[700px] overflow-hidden">
+    <!-- Animated gradient overlay -->
+    <div class="absolute inset-0 bg-gradient-to-r from-blue-600/20 to-purple-600/20 animate-pulse-slow"></div>
+    
     <div class="absolute inset-0">
-      <img 
+      <img
         [src]="bannerImage"
-        class="w-full h-full object-cover transition-opacity duration-1000"
+        class="w-full h-full object-cover transition-all duration-1000 scale-105 hover:scale-110"
         alt="Salon banner"
       />
-      <div class="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-transparent"></div>
+      <div class="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-purple-900/50"></div>
+      
+      <!-- Floating particles effect -->
+      <div class="absolute inset-0 overflow-hidden pointer-events-none">
+        <div class="particle particle-1"></div>
+        <div class="particle particle-2"></div>
+        <div class="particle particle-3"></div>
+      </div>
     </div>
 
     <div class="relative z-10 h-full flex items-center">
-      <div class="max-w-7xl mx-auto px-6">
-        <div class="max-w-2xl space-y-6">
-          
-          <h1 class="text-5xl md:text-7xl font-bold text-white leading-tight">
+      <div class="max-w-7xl mx-auto px-6 w-full">
+        <div class="max-w-3xl space-y-8 animate-fadeInUp">
+          <!-- Badge -->
+          <div class="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-xl border border-white/20 rounded-full text-white">
+            <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+            <span class="text-sm font-medium">India's Trusted Salon Platform</span>
+          </div>
+
+          <h1 class="text-6xl md:text-8xl font-bold text-white leading-tight tracking-tight">
             Welcome to
-            <span class="block bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+            <span class="block mt-2 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent animate-gradient">
               {{ salon?.name }}
             </span>
           </h1>
 
-          <p class="text-xl md:text-2xl text-gray-200">
-            Experience luxury and care at our premium branches across Pune
+          <p class="text-xl md:text-2xl text-gray-200 leading-relaxed font-light">
+            Discover premium beauty experiences across India. Book trusted salons with ease and transform your look today.
           </p>
 
-          <div class="flex flex-wrap gap-4 pt-4">
-            <button 
-              class="group px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-full hover:scale-105 transition"
-              routerLink="/services">
-              Explore Services →
+          <div class="flex flex-wrap gap-4 pt-6">
+            <button
+              class="group relative px-10 py-5 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-2xl font-semibold overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-purple-500/50"
+              routerLink="/services"
+            >
+              <span class="relative z-10 flex items-center gap-2">
+                Explore Services 
+                <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                </svg>
+              </span>
+              <div class="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 opacity-0 group-hover:opacity-100 transition-opacity"></div>
             </button>
 
-            <button 
-              class="px-8 py-4 bg-white/10 border-2 border-white/30 backdrop-blur text-white rounded-full hover:bg-white/20"
-              (click)="scrollToBranches()">
-              View Branches
+            <button
+              class="group px-10 py-5 bg-white/10 border-2 border-white/30 backdrop-blur-xl text-white rounded-2xl font-semibold hover:bg-white/20 hover:border-white/50 transition-all duration-300"
+              (click)="scrollToBranches()"
+            >
+              <span class="flex items-center gap-2">
+                View Branches
+                <svg class="w-5 h-5 group-hover:translate-y-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+                </svg>
+              </span>
             </button>
           </div>
-
         </div>
+      </div>
+    </div>
+
+    <!-- Scroll indicator -->
+    <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce-slow">
+      <div class="w-8 h-12 border-2 border-white/40 rounded-full flex justify-center">
+        <div class="w-1 h-3 bg-white rounded-full mt-2 animate-scroll"></div>
       </div>
     </div>
   </section>
 
-
-  <!-- 🔵 STATS SECTION - DYNAMIC -->
-  <section class="py-16 bg-white border-y border-gray-100">
+  <!-- 🔵 STATS SECTION - Enhanced with glassmorphism -->
+  <section class="py-20 -mt-16 relative z-20">
     <div class="max-w-7xl mx-auto px-6">
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
-
-        <div class="text-center">
-          <div class="text-5xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-            {{ stats.branchCount }}
+      <div class="bg-white/70 backdrop-blur-2xl rounded-3xl shadow-2xl border border-white/20 p-8 md:p-12">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+          <div class="text-center group cursor-pointer">
+            <div class="relative inline-block">
+              <div class="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl blur-xl opacity-30 group-hover:opacity-50 transition-opacity"></div>
+              <div class="relative text-6xl md:text-7xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                {{ stats.branchCount }}
+              </div>
+            </div>
+            <div class="text-gray-600 font-medium mt-3">Branches Nationwide</div>
           </div>
-          <div class="text-gray-600">Branches</div>
-        </div>
 
-        <div class="text-center">
-          <div class="text-5xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-            {{ stats.serviceCount }}
+          <div class="text-center group cursor-pointer">
+            <div class="relative inline-block">
+              <div class="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl blur-xl opacity-30 group-hover:opacity-50 transition-opacity"></div>
+              <div class="relative text-6xl md:text-7xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                {{ stats.serviceCount }}+
+              </div>
+            </div>
+            <div class="text-gray-600 font-medium mt-3">Premium Services</div>
           </div>
-          <div class="text-gray-600">Services</div>
-        </div>
 
-        <div class="text-center">
-          <div class="text-5xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-            {{ stats.rating }}
+          <div class="text-center group cursor-pointer">
+            <div class="relative inline-block">
+              <div class="absolute inset-0 bg-gradient-to-r from-amber-500 to-orange-500 rounded-2xl blur-xl opacity-30 group-hover:opacity-50 transition-opacity"></div>
+              <div class="relative text-6xl md:text-7xl font-bold bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent">
+                {{ stats.rating }}⭐
+              </div>
+            </div>
+            <div class="text-gray-600 font-medium mt-3">Average Rating</div>
           </div>
-          <div class="text-gray-600">Avg Rating</div>
-        </div>
 
-        <div class="text-center">
-          <div class="text-5xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-            {{ stats.reviewCount }}
+          <div class="text-center group cursor-pointer">
+            <div class="relative inline-block">
+              <div class="absolute inset-0 bg-gradient-to-r from-green-500 to-emerald-500 rounded-2xl blur-xl opacity-30 group-hover:opacity-50 transition-opacity"></div>
+              <div class="relative text-6xl md:text-7xl font-bold bg-gradient-to-r from-green-500 to-emerald-500 bg-clip-text text-transparent">
+                {{ stats.reviewCount }}+
+              </div>
+            </div>
+            <div class="text-gray-600 font-medium mt-3">Happy Customers</div>
           </div>
-          <div class="text-gray-600">Reviews</div>
         </div>
-
       </div>
     </div>
   </section>
 
+  <!-- 🔵 FEATURES SECTION - New -->
+  <section class="py-20 px-6 bg-gradient-to-b from-transparent to-purple-50/30">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center mb-16 space-y-4">
+        <h2 class="text-5xl md:text-6xl font-bold">
+          Why Choose
+          <span class="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+            Us
+          </span>
+        </h2>
+        <p class="text-gray-600 text-lg max-w-2xl mx-auto">
+          Experience the best in beauty and wellness with our premium services
+        </p>
+      </div>
 
-  <!-- 🔵 BRANCH LIST -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="group p-8 bg-white rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border border-gray-100">
+          <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-500 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path>
+            </svg>
+          </div>
+          <h3 class="text-2xl font-bold mb-3">Premium Quality</h3>
+          <p class="text-gray-600">Expert stylists and top-tier products for exceptional results</p>
+        </div>
+
+        <div class="group p-8 bg-white rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border border-gray-100">
+          <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+          </div>
+          <h3 class="text-2xl font-bold mb-3">Easy Booking</h3>
+          <p class="text-gray-600">Book appointments instantly with just a few clicks</p>
+        </div>
+
+        <div class="group p-8 bg-white rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border border-gray-100">
+          <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-500 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+          </div>
+          <h3 class="text-2xl font-bold mb-3">Trusted Service</h3>
+          <p class="text-gray-600">Verified reviews and ratings from real customers</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 🔵 BRANCH LIST - Enhanced -->
   <section id="branches" class="py-20 px-6">
     <div class="max-w-7xl mx-auto">
-
-      <div class="text-center mb-16">
-        <h2 class="text-5xl font-bold">
-          Our <span class="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Branches</span>
+      <div class="text-center mb-16 space-y-4">
+        <div class="inline-block px-6 py-2 bg-purple-100 text-purple-600 rounded-full font-semibold text-sm mb-4">
+          LOCATIONS
+        </div>
+        <h2 class="text-5xl md:text-6xl font-bold">
+          Visit Our
+          <span class="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+            Branches
+          </span>
         </h2>
+        <p class="text-gray-600 text-lg max-w-2xl mx-auto">
+          Find your nearest salon and experience luxury beauty services
+        </p>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        <app-branch-card 
+        <app-branch-card
           *ngFor="let branch of branchData"
           [branch]="branch"
-          (visitBranchClick)="handleVisitBranch($event)">
+          (visitBranchClick)="handleVisitBranch($event)"
+          class="animate-fadeInUp"
+        >
         </app-branch-card>
       </div>
-
     </div>
   </section>
 
+  <!-- 🔵 CTA SECTION - New -->
+  <section class="py-20 px-6 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 relative overflow-hidden">
+    <div class="absolute inset-0 opacity-10">
+      <div class="absolute top-0 left-0 w-96 h-96 bg-white rounded-full blur-3xl"></div>
+      <div class="absolute bottom-0 right-0 w-96 h-96 bg-white rounded-full blur-3xl"></div>
+    </div>
+    
+    <div class="max-w-4xl mx-auto text-center relative z-10">
+      <h2 class="text-5xl md:text-6xl font-bold text-white mb-6">
+        Ready to Transform Your Look?
+      </h2>
+      <p class="text-xl text-white/90 mb-10">
+        Book your appointment today and experience premium beauty services
+      </p>
+      <button
+        class="px-12 py-6 bg-white text-purple-600 rounded-2xl font-bold text-lg hover:scale-105 transition-transform shadow-2xl hover:shadow-white/50"
+        routerLink="/services"
+      >
+        Book Now →
+      </button>
+    </div>
+  </section>
 </div>

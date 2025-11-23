@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, AbstractControl, ValidatorFn } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CustomerAuthService } from '../../../../core/services/customer-auth.service.service';
 
@@ -9,7 +9,7 @@ import { CustomerAuthService } from '../../../../core/services/customer-auth.ser
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
-  loginForm: FormGroup;
+  loginForm!: FormGroup;
   showPassword = false;
   isLoading = false;
   errorMessage = '';
@@ -18,35 +18,44 @@ export class LoginComponent implements OnInit {
     private fb: FormBuilder,
     private router: Router,
     private authService: CustomerAuthService
-  ) {
-    // Fixed: Validators should be in an array
-    this.loginForm = this.fb.group({
-      email: ['', [
-        Validators.required,
-        Validators.email,
-        Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)
-      ]],
-      password: ['', [
-        Validators.required,
-        Validators.minLength(6)
-      ]],
-      rememberMe: [false]
-    });
-  }
+  ) {}
 
   ngOnInit(): void {
-    // Check if user is already logged in
+    this.loginForm = this.fb.group({
+      email: [
+        '',
+        [
+          Validators.required,
+          Validators.email,
+          Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)
+        ]
+      ],
+      password: ['', [Validators.required, Validators.minLength(6), this.uppercaseValidator()]],
+      rememberMe: [false]
+    });
+
+    // Redirect if already logged in
     const token = localStorage.getItem('authToken');
     if (token) {
-      this.router.navigate(['/']);
+      this.router.navigate(['/home']);
     }
+  }
+
+  // Custom validator for uppercase character
+  uppercaseValidator(): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      if (!control.value || control.value.length === 0) {
+        return null;
+      }
+      const hasUppercase = /[A-Z]/.test(control.value);
+      return hasUppercase ? null : { uppercase: { value: control.value } };
+    };
   }
 
   togglePasswordVisibility(): void {
     this.showPassword = !this.showPassword;
   }
 
-  // Helper method to get form control easily
   get email() {
     return this.loginForm.get('email');
   }
@@ -55,92 +64,67 @@ export class LoginComponent implements OnInit {
     return this.loginForm.get('password');
   }
 
-  // Helper methods to check specific validation errors
+  // Better validation messages
   getEmailError(): string {
-    if (this.email?.hasError('required')) {
-      return 'Email is required';
-    }
-    if (this.email?.hasError('email') || this.email?.hasError('pattern')) {
-      return 'Please enter a valid email address';
+    if (this.email?.touched || this.email?.dirty) {
+      if (this.email.hasError('required')) return 'Email is required';
+      if (this.email.hasError('email') || this.email.hasError('pattern'))
+        return 'Enter a valid email address';
     }
     return '';
   }
 
   getPasswordError(): string {
-    if (this.password?.hasError('required')) {
-      return 'Password is required';
-    }
-    if (this.password?.hasError('minLength')) {
-      return 'Password must be at least 6 characters';
+    if (this.password?.touched || this.password?.dirty) {
+      if (this.password.hasError('required')) return 'Password is required';
+      if (this.password.hasError('minlength')) return 'Password must be at least 6 characters';
+      if (this.password.hasError('uppercase')) return 'Password must contain at least one uppercase letter';
     }
     return '';
   }
 
   onSubmit(): void {
-    // Mark all fields as touched to show validation errors
     this.loginForm.markAllAsTouched();
 
-    if (this.loginForm.valid) {
-      this.isLoading = true;
-      this.errorMessage = '';
-
-      const { email, password, rememberMe } = this.loginForm.value;
-
-      // Prepare login data
-      const loginData = {
-        email,
-        password
-      };
-
-      // Call the API
-      this.authService.login(loginData).subscribe({
-        next: (response: any) => {
-          console.log('Login successful:', response);
-          
-          // Store auth data
-          if (response.data && response.data.token) {
-            localStorage.setItem('authToken', response.data.token);
-            localStorage.setItem('currentUser', JSON.stringify(response.data.customer));
-            localStorage.setItem('salonId', response.data.customer.salonId);
-            
-            // Store remember me preference
-            if (rememberMe) {
-              localStorage.setItem('rememberMe', 'true');
-            }
-            
-            // Navigate to home or dashboard
-            this.router.navigate(['/home']);
-          } else {
-            this.errorMessage = 'Invalid response from server';
-          }
-          
-          this.isLoading = false;
-        },
-        error: (error) => {
-          console.error('Login error:', error);
-          
-          // Handle error response
-          if (error.error && error.error.message) {
-            this.errorMessage = error.error.message;
-          } else if (error.status === 0) {
-            this.errorMessage = 'Unable to connect to server. Please check your internet connection.';
-          } else if (error.status === 401) {
-            this.errorMessage = 'Invalid email or password';
-          } else if (error.status === 500) {
-            this.errorMessage = 'Server error. Please try again later.';
-          } else {
-            this.errorMessage = 'Login failed. Please try again.';
-          }
-          
-          this.isLoading = false;
-        },
-        complete: () => {
-          console.log('Login request completed');
-        }
-      });
-    } else {
-      // Show validation error message
-      this.errorMessage = 'Please fill in all required fields correctly.';
+    if (this.loginForm.invalid) {
+      return;
     }
+
+    this.isLoading = true;
+    this.errorMessage = '';
+
+    const { email, password, rememberMe } = this.loginForm.value;
+
+    const loginData = { email, password };
+
+    this.authService.login(loginData).subscribe({
+      next: (response: any) => {
+        this.isLoading = false;
+
+        console.log('Login successful:', response);
+
+        if (response?.data?.token) {
+          localStorage.setItem('authToken', response.data.token);
+          localStorage.setItem('currentUser', JSON.stringify(response.data.customer));
+          localStorage.setItem('salonId', response.data.customer.salonId);
+
+          // Remember Me
+          if (rememberMe) localStorage.setItem('rememberMe', 'true');
+          else localStorage.removeItem('rememberMe');
+
+          this.router.navigate(['/home']);
+        }
+      },
+      error: (err) => {
+        this.isLoading = false;
+
+        // API structure: { success: false, message: "..." }
+        if (err.error?.message) {
+          this.errorMessage = err.error.message;
+        } else {
+          this.errorMessage = 'Something went wrong. Please try again.';
+        }
+      }
+    });
   }
 }

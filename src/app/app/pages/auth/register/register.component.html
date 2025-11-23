@@ -28,12 +28,12 @@
               formControlName="fullName" 
               placeholder="Enter your full name"
               class="w-full pl-10 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-              [class.border-red-500]="registerForm.get('fullName')?.invalid && registerForm.get('fullName')?.touched"
+              [class.border-red-500]="registerForm.get('fullName')?.invalid && (registerForm.get('fullName')?.touched || registerForm.get('fullName')?.dirty)"
             />
           </div>
-          <div *ngIf="registerForm.get('fullName')?.invalid && registerForm.get('fullName')?.touched" 
+          <div *ngIf="registerForm.get('fullName')?.invalid && (registerForm.get('fullName')?.touched || registerForm.get('fullName')?.dirty)" 
                class="text-red-500 text-xs mt-1 ml-1">
-            Full name is required (minimum 2 characters)
+            {{ getFullNameError() }}
           </div>
         </div>
 
@@ -53,13 +53,12 @@
               formControlName="email" 
               placeholder="Enter your email"
               class="w-full pl-10 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-              [class.border-red-500]="registerForm.get('email')?.invalid && registerForm.get('email')?.touched"
+              [class.border-red-500]="registerForm.get('email')?.invalid && (registerForm.get('email')?.touched || registerForm.get('email')?.dirty)"
             />
           </div>
-          <div *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched" 
+          <div *ngIf="registerForm.get('email')?.invalid && (registerForm.get('email')?.touched || registerForm.get('email')?.dirty)" 
                class="text-red-500 text-xs mt-1 ml-1">
-            <span *ngIf="registerForm.get('email')?.errors?.['required']">Email is required</span>
-            <span *ngIf="registerForm.get('email')?.errors?.['email']">Please enter a valid email</span>
+            {{ getEmailError() }}
           </div>
         </div>
 
@@ -79,12 +78,12 @@
               formControlName="phone" 
               placeholder="Enter 10-digit mobile number"
               class="w-full pl-10 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-              [class.border-red-500]="registerForm.get('phone')?.invalid && registerForm.get('phone')?.touched"
+              [class.border-red-500]="registerForm.get('phone')?.invalid && (registerForm.get('phone')?.touched || registerForm.get('phone')?.dirty)"
             />
           </div>
-          <div *ngIf="registerForm.get('phone')?.invalid && registerForm.get('phone')?.touched" 
+          <div *ngIf="registerForm.get('phone')?.invalid && (registerForm.get('phone')?.touched || registerForm.get('phone')?.dirty)" 
                class="text-red-500 text-xs mt-1 ml-1">
-            Valid 10-digit phone number required
+            {{ getPhoneError() }}
           </div>
         </div>
 
@@ -104,7 +103,7 @@
               formControlName="password" 
               placeholder="Create a strong password"
               class="w-full pl-10 pr-12 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-              [class.border-red-500]="registerForm.get('password')?.invalid && registerForm.get('password')?.touched"
+              [class.border-red-500]="registerForm.get('password')?.invalid && (registerForm.get('password')?.touched || registerForm.get('password')?.dirty)"
             />
             <button 
               type="button"
@@ -119,9 +118,9 @@
               </svg>
             </button>
           </div>
-          <div *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched" 
+          <div *ngIf="registerForm.get('password')?.invalid && (registerForm.get('password')?.touched || registerForm.get('password')?.dirty)" 
                class="text-red-500 text-xs mt-1 ml-1">
-            Password must be at least 6 characters
+            {{ getPasswordError() }}
           </div>
         </div>
 
@@ -141,7 +140,7 @@
               formControlName="confirmPassword" 
               placeholder="Re-enter your password"
               class="w-full pl-10 pr-12 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-              [class.border-red-500]="registerForm.get('confirmPassword')?.invalid && registerForm.get('confirmPassword')?.touched"
+              [class.border-red-500]="registerForm.get('confirmPassword')?.invalid && (registerForm.get('confirmPassword')?.touched || registerForm.get('confirmPassword')?.dirty)"
             />
             <button 
               type="button"
@@ -156,11 +155,11 @@
               </svg>
             </button>
           </div>
-          <div *ngIf="registerForm.get('confirmPassword')?.invalid && registerForm.get('confirmPassword')?.touched" 
+          <div *ngIf="registerForm.get('confirmPassword')?.invalid && (registerForm.get('confirmPassword')?.touched || registerForm.get('confirmPassword')?.dirty)" 
                class="text-red-500 text-xs mt-1 ml-1">
-            <span *ngIf="registerForm.get('confirmPassword')?.errors?.['required']">Please confirm your password</span>
+            Confirm password is required
           </div>
-          <div *ngIf="registerForm.hasError('passwordMismatch') && registerForm.get('confirmPassword')?.touched" 
+          <div *ngIf="registerForm.hasError('passwordMismatch') && (registerForm.get('confirmPassword')?.touched || registerForm.get('confirmPassword')?.dirty)" 
                class="text-red-500 text-xs mt-1 ml-1">
             Passwords do not match
           </div>

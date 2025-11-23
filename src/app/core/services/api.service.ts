@@ -22,4 +22,9 @@ createBooking(bookingData: any) {
   return this.http.post(`${this.apiUrl}/booking/create`, bookingData);
 }
 
+getSalonDetails() {
+    const salonSlug = environment.salonSlug;
+  return this.http.get(`${this.apiUrl}/salon/${salonSlug}`);
+}
+
 }

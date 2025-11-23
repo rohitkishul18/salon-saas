@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CustomerAuthService } from '../../../../core/services/customer-auth.service.service';
 
@@ -28,7 +28,7 @@ export class RegisterComponent implements OnInit {
         Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)
       ]],
       phone: ['', [Validators.required, Validators.pattern(/^[6-9]\d{9}$/)]],
-      password: ['', [Validators.required, Validators.minLength(6)]],
+      password: ['', [Validators.required, Validators.minLength(6), this.uppercaseValidator()]],
       confirmPassword: ['', Validators.required],
       agreeToTerms: [false, Validators.requiredTrue]
     }, {
@@ -42,6 +42,17 @@ export class RegisterComponent implements OnInit {
     if (token) {
       this.router.navigate(['/']);
     }
+  }
+
+  // Custom validator for uppercase character
+  uppercaseValidator(): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      if (!control.value || control.value.length === 0) {
+        return null;
+      }
+      const hasUppercase = /[A-Z]/.test(control.value);
+      return hasUppercase ? null : { uppercase: { value: control.value } };
+    };
   }
 
   // Custom validator to check if passwords match
@@ -81,6 +92,40 @@ export class RegisterComponent implements OnInit {
     return this.registerForm.get('agreeToTerms');
   }
 
+  // Better validation messages
+  getFullNameError(): string {
+    if (this.fullName?.touched || this.fullName?.dirty) {
+      if (this.fullName.hasError('required')) return 'Full name is required';
+      if (this.fullName.hasError('minlength')) return 'Full name must be at least 2 characters';
+    }
+    return '';
+  }
+
+  getEmailError(): string {
+    if (this.email?.touched || this.email?.dirty) {
+      if (this.email.hasError('required')) return 'Email is required';
+      if (this.email.hasError('email') || this.email.hasError('pattern')) return 'Please enter a valid email';
+    }
+    return '';
+  }
+
+  getPhoneError(): string {
+    if (this.phone?.touched || this.phone?.dirty) {
+      if (this.phone.hasError('required')) return 'Phone number is required';
+      if (this.phone.hasError('pattern')) return 'Valid 10-digit phone number required';
+    }
+    return '';
+  }
+
+  getPasswordError(): string {
+    if (this.password?.touched || this.password?.dirty) {
+      if (this.password.hasError('required')) return 'Password is required';
+      if (this.password.hasError('minlength')) return 'Password must be at least 6 characters';
+      if (this.password.hasError('uppercase')) return 'Password must contain at least one uppercase letter';
+    }
+    return '';
+  }
+
   togglePasswordVisibility(): void {
     this.showPassword = !this.showPassword;
   }
@@ -113,43 +158,32 @@ export class RegisterComponent implements OnInit {
           console.log('Registration successful:', response);
           
           // Handle successful registration
-          if (response.success && response.data) {
+          if (response?.success && response?.data) {
             // Store auth data if token is provided
             if (response.data.token) {
               localStorage.setItem('authToken', response.data.token);
             }
             
-            // Store customer data
-            localStorage.setItem('currentUser', JSON.stringify(response.data));
-            localStorage.setItem('salonId', response.data.salonId);
+            // Store customer data (consistent with login)
+            localStorage.setItem('currentUser', JSON.stringify(response.data.customer));
+            localStorage.setItem('salonId', response.data.customer.salonId);
 
             // Show success message
             this.errorMessage = '';
             
-            // Navigate to login or home
-            // Option 1: Navigate to login page
-            // this.router.navigate(['/login'], { 
-            //   queryParams: { registered: 'true', email: email } 
-            // });
-
-            // Option 2: Navigate to home if token is provided
-            if (response.data.token) {
-              this.router.navigate(['/home']);
-            } else {
-              // Navigate to login if no token
-              this.router.navigate(['/home']);
-            }
+            // Navigate to home since token is provided
+            this.router.navigate(['/home']);
           } else {
             this.errorMessage = response.message || 'Registration failed. Please try again.';
           }
           
           this.isLoading = false;
         },
-        error: (error:any) => {
+        error: (error: any) => {
           console.error('Registration error:', error);
           
           // Handle error response
-          if (error.error && error.error.message) {
+          if (error.error?.message) {
             this.errorMessage = error.error.message;
           } else if (error.status === 0) {
             this.errorMessage = 'Unable to connect to server. Please check your internet connection.';
@@ -169,13 +203,7 @@ export class RegisterComponent implements OnInit {
           console.log('Registration request completed');
         }
       });
-    } else {
-      // Show validation error message
-      if (this.registerForm.hasError('passwordMismatch')) {
-        this.errorMessage = 'Passwords do not match. Please check and try again.';
-      } else {
-        this.errorMessage = 'Please fill in all required fields correctly.';
-      }
     }
+    // No else block needed - field errors will show via markAllAsTouched
   }
 }

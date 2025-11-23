@@ -1,23 +1,49 @@
 :host {
   display: block;
-  padding-top: 80px; // Account for fixed header
-  // padding-bottom: 60px;
+  padding-top: 80px;
 }
 
-
+// Enhanced animations
 @keyframes scaleIn {
   from { 
-    transform: scale(0);
+    transform: scale(0) rotate(-180deg);
     opacity: 0;
   }
   to { 
-    transform: scale(1);
+    transform: scale(1) rotate(0deg);
     opacity: 1;
   }
 }
 
-.animate-scaleIn {
-  animation: scaleIn 0.3s ease-out forwards;
+@keyframes fadeIn {
+  from { 
+    opacity: 0;
+  }
+  to { 
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInUp {
+  from { 
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to { 
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideUp {
+  from { 
+    transform: translateY(50px);
+    opacity: 0;
+  }
+  to { 
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 @keyframes spin {
@@ -25,29 +51,326 @@
   to { transform: rotate(360deg); }
 }
 
+@keyframes spin-reverse {
+  from { transform: rotate(360deg); }
+  to { transform: rotate(0deg); }
+}
+
+@keyframes pulse-slow {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0) translateX(0);
+  }
+  33% {
+    transform: translateY(-25px) translateX(15px);
+  }
+  66% {
+    transform: translateY(-15px) translateX(-15px);
+  }
+}
+
+@keyframes confetti-fall {
+  0% {
+    transform: translateY(-100%) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh) rotate(720deg);
+    opacity: 0;
+  }
+}
+
+// Apply animations
+.animate-scaleIn {
+  animation: scaleIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.4s ease-out forwards;
+}
+
+.animate-fadeInUp {
+  animation: fadeInUp 0.6s ease-out forwards;
+}
+
+.animate-slideUp {
+  animation: slideUp 0.5s ease-out forwards;
+}
+
 .animate-spin {
   animation: spin 1s linear infinite;
 }
 
-/* Smooth transitions for all interactive elements */
-button, a, input, select, textarea {
-  transition: all 0.3s ease;
+.animate-spin-reverse {
+  animation: spin-reverse 1.5s linear infinite;
 }
 
-/* Custom scrollbar */
-::-webkit-scrollbar {
+.animate-pulse-slow {
+  animation: pulse-slow 3s ease-in-out infinite;
+}
+
+// Floating particles
+.particle {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.3));
+  border-radius: 50%;
+  animation: float 10s ease-in-out infinite;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+.particle-1 {
+  top: 15%;
+  left: 15%;
+  animation-delay: 0s;
+  animation-duration: 12s;
+}
+
+.particle-2 {
+  top: 50%;
+  right: 25%;
+  width: 8px;
+  height: 8px;
+  animation-delay: 2s;
+  animation-duration: 14s;
+}
+
+.particle-3 {
+  bottom: 25%;
+  left: 65%;
+  width: 5px;
+  height: 5px;
+  animation-delay: 4s;
+  animation-duration: 16s;
+}
+
+// Confetti particles for success modal
+.confetti {
+  position: absolute;
   width: 10px;
+  height: 10px;
+  animation: confetti-fall 3s ease-out infinite;
+}
+
+.confetti-1 {
+  left: 10%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  animation-delay: 0s;
+}
+
+.confetti-2 {
+  left: 30%;
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  animation-delay: 0.5s;
+}
+
+.confetti-3 {
+  left: 50%;
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  animation-delay: 1s;
+}
+
+.confetti-4 {
+  left: 70%;
+  background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+  animation-delay: 1.5s;
+}
+
+.confetti-5 {
+  left: 90%;
+  background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+  animation-delay: 2s;
+}
+
+// Smooth transitions
+button, a, input, select, textarea {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+// Enhanced hover effects
+.group:hover {
+  box-shadow: 0 25px 70px -15px rgba(139, 92, 246, 0.5);
+}
+
+// Custom scrollbar
+::-webkit-scrollbar {
+  width: 12px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: linear-gradient(to bottom, #f1f5f9, #e2e8f0);
+  border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(to bottom, #2563eb, #7c3aed);
-  border-radius: 5px;
+  background: linear-gradient(to bottom, #3b82f6, #8b5cf6, #ec4899);
+  border-radius: 10px;
+  border: 2px solid #f1f5f9;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(to bottom, #1d4ed8, #6d28d9);
+  background: linear-gradient(to bottom, #2563eb, #7c3aed, #db2777);
+}
+
+// Glassmorphism enhancement
+.backdrop-blur-xl {
+  backdrop-filter: blur(20px);
+}
+
+.backdrop-blur-2xl {
+  backdrop-filter: blur(40px);
+}
+
+.backdrop-blur-md {
+  backdrop-filter: blur(12px);
+}
+
+// Staggered animation for service cards
+.grid > * {
+  opacity: 0;
+  animation: fadeInUp 0.8s ease-out forwards;
+}
+
+.grid > *:nth-child(1) { animation-delay: 0.1s; }
+.grid > *:nth-child(2) { animation-delay: 0.2s; }
+.grid > *:nth-child(3) { animation-delay: 0.3s; }
+.grid > *:nth-child(4) { animation-delay: 0.4s; }
+.grid > *:nth-child(5) { animation-delay: 0.5s; }
+.grid > *:nth-child(6) { animation-delay: 0.6s; }
+.grid > *:nth-child(7) { animation-delay: 0.7s; }
+.grid > *:nth-child(8) { animation-delay: 0.8s; }
+.grid > *:nth-child(9) { animation-delay: 0.9s; }
+
+// Smooth scrolling
+html {
+  scroll-behavior: smooth;
+}
+
+// Input focus effects
+input:focus, select:focus, textarea:focus {
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+}
+
+// Form validation states
+input.border-red-500, select.border-red-500, textarea.border-red-500 {
+  animation: shake 0.3s ease-in-out;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-10px); }
+  75% { transform: translateX(10px); }
+}
+
+// Button hover glow effect
+button:not(:disabled):hover {
+  filter: brightness(1.1);
+}
+
+button:disabled {
+  filter: grayscale(0.5);
+}
+
+// Modal backdrop
+.fixed.inset-0 {
+  backdrop-filter: blur(8px);
+}
+
+// Service card selected state enhancement
+.ring-4 {
+  animation: pulse-ring 1.5s ease-out infinite;
+}
+
+@keyframes pulse-ring {
+  0% {
+    box-shadow: 0 0 0 0 rgba(147, 51, 234, 0.7);
+  }
+  100% {
+    box-shadow: 0 0 0 20px rgba(147, 51, 234, 0);
+  }
+}
+
+// Loading spinner enhancement
+.animate-spin {
+  transform-origin: center;
+}
+
+// Responsive enhancements
+@media (max-width: 768px) {
+  .particle {
+    display: none;
+  }
+  
+  h1 {
+    font-size: 2rem !important;
+  }
+  
+  h2 {
+    font-size: 1.75rem !important;
+  }
+  
+  // Reduce confetti on mobile
+  .confetti {
+    width: 6px;
+    height: 6px;
+  }
+}
+
+@media (max-width: 640px) {
+  .confetti-2, .confetti-4 {
+    display: none;
+  }
+}
+
+// Print styles
+@media print {
+  .particle,
+  .confetti,
+  .animate-spin,
+  .animate-pulse,
+  button:not(.print-visible),
+  .fixed {
+    display: none !important;
+  }
+  
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+// Accessibility - Reduced motion
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  
+  .particle,
+  .confetti {
+    display: none;
+  }
+}
+
+// Dark mode support (optional)
+@media (prefers-color-scheme: dark) {
+  ::-webkit-scrollbar-track {
+    background: linear-gradient(to bottom, #1e293b, #0f172a);
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    border-color: #1e293b;
+  }
 }

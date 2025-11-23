@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { authGuard } from './core/guards/auth.guard';
 
 const routes: Routes = [
   {
@@ -13,7 +14,8 @@ const routes: Routes = [
   },
   {
     path: 'branch/:branchSlug',
-    loadChildren: () => import('./app/pages/branch/branch.module').then(m => m.BranchModule)
+    loadChildren: () => import('./app/pages/branch/branch.module').then(m => m.BranchModule),
+    canActivate: [authGuard]
   },
   {
     path: 'auth',
