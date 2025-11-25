@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { ApiService } from 'src/app/core/services/api.service';
-import { environment } from '../../../../../src/environments/environment';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-home',

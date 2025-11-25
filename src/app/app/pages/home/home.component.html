@@ -87,7 +87,7 @@
         <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
           <div class="text-center group cursor-pointer">
             <div class="relative inline-block">
-              <div class="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl blur-xl opacity-30 group-hover:opacity-50 transition-opacity"></div>
+              <div class="absolute  bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl blur-xl opacity-30 group-hover:opacity-50 transition-opacity"></div>
               <div class="relative text-6xl md:text-7xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                 {{ stats.branchCount }}
               </div>
@@ -224,7 +224,7 @@
       </p>
       <button
         class="px-12 py-6 bg-white text-purple-600 rounded-2xl font-bold text-lg hover:scale-105 transition-transform shadow-2xl hover:shadow-white/50"
-        routerLink="/services"
+        (click)="scrollToBranches()"
       >
        Visit Branches And Book Now....
       </button>
