@@ -11,6 +11,10 @@ export class AppComponent {
   constructor(public router: Router) {}
 
   hideHeaderFooter() {
-    return this.router.url.includes('login') || this.router.url.includes('register');
+    // Updated: Added 'reset-password' to hide on this page too
+    return this.router.url.includes('login') || 
+           this.router.url.includes('register') || 
+           this.router.url.includes('forgot-password') ||
+           this.router.url.includes('reset-password');  // Fixed: Added missing ||
   }
 }

@@ -10,6 +10,7 @@ import { BranchCardComponent } from './branch-card/branch-card.component';
 import { ToastComponent } from './toast/toast.component';
 import { AuthPopupComponent } from './auth-popup/auth-popup.component';
 
+
 @NgModule({
   declarations: [
     HeaderComponent,
@@ -17,11 +18,12 @@ import { AuthPopupComponent } from './auth-popup/auth-popup.component';
     ServiceCardComponent,
     BranchCardComponent,
     ToastComponent,
-    AuthPopupComponent
+    AuthPopupComponent,
+      
   ],
   imports: [
     CommonModule,
-    RouterModule  // Add RouterModule for routerLink to work
+    RouterModule,  // Add RouterModule for routerLink to work
   ],
   exports: [
     // Export all components that will be used in other modules
@@ -32,7 +34,7 @@ import { AuthPopupComponent } from './auth-popup/auth-popup.component';
     ToastComponent,
     AuthPopupComponent,
     // Export CommonModule so feature modules don't need to import it
-    CommonModule
+    CommonModule,
   ]
 })
 export class SharedModule { }

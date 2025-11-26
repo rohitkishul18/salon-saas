@@ -80,7 +80,7 @@
             <input type="checkbox" formControlName="rememberMe" class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
             <span class="ml-2 text-sm text-gray-600">Remember me</span>
           </label>
-          <a href="#" class="text-sm font-medium text-blue-600 hover:text-blue-700">
+          <a routerLink="/auth/forgot-password" class="text-sm font-medium text-blue-600 hover:text-blue-700">
             Forgot password?
           </a>
         </div>
@@ -118,7 +118,7 @@
 
       <!-- Sign Up Link -->
       <button 
-        routerLink="/register"
+       routerLink="/auth/register"
         class="w-full py-3 border-2 border-gray-200 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-all duration-200">
         Create New Account
       </button>

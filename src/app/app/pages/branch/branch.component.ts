@@ -6,10 +6,9 @@ import { ApiService } from 'src/app/core/services/api.service';
 @Component({
   selector: 'app-branch',
   templateUrl: './branch.component.html',
-  styleUrls: ['./branch.component.scss']
+  styleUrls: ['./branch.component.scss'],
 })
 export class BranchComponent implements OnInit, OnDestroy {
-
   branchSlug!: string;
 
   branchData: any = null;
@@ -35,7 +34,7 @@ export class BranchComponent implements OnInit, OnDestroy {
     'https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=1600&h=900&fit=crop',
     'https://images.unsplash.com/photo-1633681926022-84c23e8cb2d6?w=1600&h=900&fit=crop',
     'https://images.unsplash.com/photo-1522337660859-02fbefca4702?w=1600&h=900&fit=crop',
-    'https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=1600&h=900&fit=crop'
+    'https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=1600&h=900&fit=crop',
   ];
 
   private imageRotationInterval: any;
@@ -44,21 +43,24 @@ export class BranchComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private api: ApiService,
     private fb: FormBuilder
-  ){
-     this.bookingForm = this.fb.group({
+  ) {
+    this.bookingForm = this.fb.group({
       customerName: ['', [Validators.required, Validators.minLength(2)]],
-      customerPhone: ['', [Validators.required, Validators.pattern(/^[6-9]\d{9}$/)]],
+      customerPhone: [
+        '',
+        [Validators.required, Validators.pattern(/^[6-9]\d{9}$/)],
+      ],
       serviceId: ['', Validators.required],
       scheduledAt: ['', Validators.required],
-      notes: ['']
-    }); 
+      notes: [''],
+    });
   }
 
   ngOnInit(): void {
     this.minDateTime = new Date(Date.now() + 60 * 60 * 1000)
       .toISOString()
       .slice(0, 16);
-    
+
     this.branchSlug = this.route.snapshot.paramMap.get('branchSlug')!;
     this.loadBranchData();
     this.startImageRotation();
@@ -72,13 +74,13 @@ export class BranchComponent implements OnInit, OnDestroy {
 
   loadBranchData() {
     this.isLoading = true;
-    
+
     this.api.getBranchBySlug(this.branchSlug).subscribe({
       next: (res: any) => {
-        console.log("Branch API Response:", res);
+        console.log('Branch API Response:', res);
 
         if (res.success) {
-          console.log("Branch Data:", res.data.branch);
+          console.log('Branch Data:', res.data.branch);
           this.branchData = res.data.branch;
           this.salonData = res.data.salon;
           this.services = res.data.services || [];
@@ -97,36 +99,60 @@ export class BranchComponent implements OnInit, OnDestroy {
             }
 
             if (!this.branchData.reviewCount) {
-              this.branchData.reviewCount = 0;
+              this.branchData.reviewCount = 0 + Math.floor(Math.random() * 100);
             }
 
-            if (!this.branchData.openingHours) {
-              this.branchData.openingHours = {
-                from: '9:00 AM',
-                to: '9:00 PM'
-              };
+            if (this.branchData.openingHours) {
+              const formatted = this.formatOpeningHours(
+                this.branchData.openingHours
+              );
+              this.branchData.openingHours = formatted;
+            } else {
+              this.branchData.openingHours = { from: '9 AM', to: '9 PM' };
             }
           }
 
-          console.log("Processed Branch Data:", this.branchData);
-          console.log("Services:", this.services);
+          console.log('Processed Branch Data:', this.branchData);
+          console.log('Services:', this.services);
         } else {
-          console.error("API returned success: false");
+          console.error('API returned success: false');
           this.showError('Failed to load branch details. Please try again.');
         }
 
         this.isLoading = false;
       },
       error: (err) => {
-        console.error("Error loading branch:", err);
+        console.error('Error loading branch:', err);
         this.isLoading = false;
         this.showError('Error loading branch details. Please try again later.');
-      }
+      },
     });
   }
 
+
+ formatOpeningHours(openingHours: string) {
+  const [from, to] = openingHours.split(' - ');
+
+  return {
+    from: this.convertTo12Hour(from),
+    to: this.convertTo12Hour(to)
+  };
+}
+
+convertTo12Hour(time: string): string {
+  const [hour, minute] = time.split(':').map(Number);
+
+  let suffix = hour >= 12 ? 'PM' : 'AM';
+  let convertedHour = hour % 12 || 12;
+
+  return `${convertedHour} ${suffix}`;
+}
+
+
   private getRandomBannerImage(): string {
-    const randomIndex = Math.floor(Math.random() * this.branchBannerImages.length);
+    const randomIndex = Math.floor(
+      Math.random() * this.branchBannerImages.length
+    );
     return `${this.branchBannerImages[randomIndex]}&t=${Date.now()}`;
   }
 
@@ -139,16 +165,16 @@ export class BranchComponent implements OnInit, OnDestroy {
   }
 
   selectService(serviceId: string) {
-    console.log("Selected Service:", serviceId);
+    console.log('Selected Service:', serviceId);
     this.bookingForm.patchValue({
-      serviceId: serviceId
+      serviceId: serviceId,
     });
   }
 
   submitBooking() {
     if (this.bookingForm.invalid) {
-      console.log("Booking form is invalid");
-      Object.keys(this.bookingForm.controls).forEach(key => {
+      console.log('Booking form is invalid');
+      Object.keys(this.bookingForm.controls).forEach((key) => {
         this.bookingForm.get(key)?.markAsTouched();
       });
       this.showError('Please fill in all required fields correctly.');
@@ -162,20 +188,24 @@ export class BranchComponent implements OnInit, OnDestroy {
       customerName: this.bookingForm.value.customerName,
       customerPhone: this.bookingForm.value.customerPhone,
       scheduledAt: new Date(this.bookingForm.value.scheduledAt).toISOString(),
-      notes: this.bookingForm.value.notes || ''
+      notes: this.bookingForm.value.notes || '',
     };
 
-    console.log("Submitting booking with data:", bookingData);
-    
+    console.log('Submitting booking with data:', bookingData);
+
     this.isSubmitting = true;
 
     this.api.createBooking(bookingData).subscribe({
       next: (response: any) => {
-        console.log("Booking created successfully:", response);
+        console.log('Booking created successfully:', response);
         this.isSubmitting = false;
 
-        const selectedService = this.services.find(s => s._id === bookingData.serviceId);
-        const serviceName = selectedService ? selectedService.name : 'Selected Service';
+        const selectedService = this.services.find(
+          (s) => s._id === bookingData.serviceId
+        );
+        const serviceName = selectedService
+          ? selectedService.name
+          : 'Selected Service';
         const servicePrice = selectedService ? selectedService.price : '';
 
         this.bookingDetails = {
@@ -183,41 +213,47 @@ export class BranchComponent implements OnInit, OnDestroy {
           customerPhone: bookingData.customerPhone,
           serviceName: serviceName,
           servicePrice: servicePrice,
-          scheduledAt: new Date(bookingData.scheduledAt).toLocaleString('en-IN', {
-            dateStyle: 'medium',
-            timeStyle: 'short'
-          }),
+          scheduledAt: new Date(bookingData.scheduledAt).toLocaleString(
+            'en-IN',
+            {
+              dateStyle: 'medium',
+              timeStyle: 'short',
+            }
+          ),
           location: this.branchData.name,
           salon: this.salonData.name,
-          notes: bookingData.notes
+          notes: bookingData.notes,
         };
 
         this.showSuccessModal = true;
 
         this.bookingForm.reset();
-        
+
         this.minDateTime = new Date(Date.now() + 60 * 60 * 1000)
           .toISOString()
           .slice(0, 16);
       },
       error: (error) => {
-        console.error("Booking creation failed:", error);
+        console.error('Booking creation failed:', error);
         this.isSubmitting = false;
 
         let errorMessage = 'Unable to complete your booking. Please try again.';
-        
+
         if (error.error?.message) {
           errorMessage = error.error.message;
         } else if (error.status === 400) {
-          errorMessage = 'Invalid booking details. Please check your information and try again.';
+          errorMessage =
+            'Invalid booking details. Please check your information and try again.';
         } else if (error.status === 404) {
-          errorMessage = 'Service or location not found. Please refresh the page and try again.';
+          errorMessage =
+            'Service or location not found. Please refresh the page and try again.';
         } else if (error.status === 0) {
-          errorMessage = 'Network error. Please check your internet connection.';
+          errorMessage =
+            'Network error. Please check your internet connection.';
         }
 
         this.showError(errorMessage);
-      }
+      },
     });
   }
 
@@ -238,34 +274,34 @@ export class BranchComponent implements OnInit, OnDestroy {
 
   getSelectedServiceName(): string {
     const serviceId = this.bookingForm.get('serviceId')?.value;
-    const service = this.services.find(s => s._id === serviceId);
+    const service = this.services.find((s) => s._id === serviceId);
     return service ? service.name : 'Unknown Service';
   }
 
   isOpen(): boolean {
     if (!this.branchData?.openingHours) return true;
-    
+
     try {
       const now = new Date();
       const currentTime = now.getHours() * 60 + now.getMinutes();
-      
+
       const parseTime = (timeStr: string): number => {
         const [time, period] = timeStr.split(' ');
         const [hours, minutes] = time.split(':').map(Number);
         let totalMinutes = hours * 60 + minutes;
-        
+
         if (period === 'PM' && hours !== 12) {
           totalMinutes += 12 * 60;
         } else if (period === 'AM' && hours === 12) {
           totalMinutes -= 12 * 60;
         }
-        
+
         return totalMinutes;
       };
-      
+
       const openTime = parseTime(this.branchData.openingHours.from);
       const closeTime = parseTime(this.branchData.openingHours.to);
-      
+
       return currentTime >= openTime && currentTime <= closeTime;
     } catch (error) {
       console.error('Error parsing opening hours:', error);

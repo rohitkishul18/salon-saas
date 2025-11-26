@@ -173,7 +173,7 @@
             class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 mt-1"
           />
           <label class="ml-2 text-sm text-gray-600">
-            I agree to the <a href="#" class="text-blue-600 hover:text-blue-700 font-medium">Terms & Conditions</a> and <a href="#" class="text-blue-600 hover:text-blue-700 font-medium">Privacy Policy</a>
+            I agree to the <a (click)="openTerms($event)" class="text-blue-600 hover:text-blue-700 font-medium cursor-pointer">Terms & Conditions</a> and <a (click)="openPrivacy($event)" class="text-blue-600 hover:text-blue-700 font-medium cursor-pointer">Privacy Policy</a>
           </label>
         </div>
         <div *ngIf="registerForm.get('agreeToTerms')?.invalid && registerForm.get('agreeToTerms')?.touched" 
@@ -214,10 +214,16 @@
 
       <!-- Sign In Link -->
       <button 
-        routerLink="/login"
+        routerLink="/auth/login"
         class="w-full py-3 border-2 border-gray-200 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-all duration-200">
         Sign In Instead
       </button>
     </div>
   </div>
 </div>
+
+<!-- Privacy Modal -->
+<app-privacy-modal *ngIf="showPrivacyModal" [showModal]="showPrivacyModal" (closeModalEvent)="showPrivacyModal = false"></app-privacy-modal>
+
+<!-- Terms Modal -->
+<app-terms-modal *ngIf="showTermsModal" [showModal]="showTermsModal" (closeModalEvent)="showTermsModal = false"></app-terms-modal>

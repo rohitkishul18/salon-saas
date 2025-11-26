@@ -14,11 +14,13 @@ export class RegisterComponent implements OnInit {
   showConfirmPassword = false;
   isLoading = false;
   errorMessage = '';
+  showPrivacyModal = false;
+  showTermsModal = false;
 
   constructor(
     private fb: FormBuilder,
     private router: Router,
-    private authService: CustomerAuthService
+    private authService: CustomerAuthService,
   ) {
     this.registerForm = this.fb.group({
       fullName: ['', [Validators.required, Validators.minLength(2)]],
@@ -132,6 +134,16 @@ export class RegisterComponent implements OnInit {
 
   toggleConfirmPasswordVisibility(): void {
     this.showConfirmPassword = !this.showConfirmPassword;
+  }
+
+  openTerms(event: Event): void {
+    event.preventDefault();
+    this.showTermsModal = true;
+  }
+
+  openPrivacy(event: Event): void {
+    event.preventDefault();
+    this.showPrivacyModal = true;
   }
 
   onSubmit(): void {
