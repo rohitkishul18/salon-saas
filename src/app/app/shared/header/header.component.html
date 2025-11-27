@@ -24,7 +24,7 @@
         <div class="relative group">
           <a routerLink="/account" class="flex items-center gap-2 text-gray-700 hover:text-blue-600 font-medium transition-all duration-200">
             <!-- Fallback to initials if no gender -->
-            <span *ngIf="!currentUser?.gender" class="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-full flex items-center justify-center text-sm font-bold shadow-sm">
+            <span *ngIf="currentUser" class="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-full flex items-center justify-center text-sm font-bold shadow-sm">
               {{ initials }}
             </span>
             <span class="flex text-blue-600">{{ currentUser?.fullName }}</span>

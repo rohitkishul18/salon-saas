@@ -10,12 +10,18 @@ import { registerLocaleData } from '@angular/common';
 import en from '@angular/common/locales/en';
 import { FormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MainLayoutComponent } from './app/layouts/main-layout/main-layout.component';
+import { AuthLayoutComponent } from './app/layouts/auth-layout/auth-layout.component';
+import { NotFoundComponent } from './app/pages/not-found/not-found.component';
 
 registerLocaleData(en);
 
 @NgModule({
   declarations: [
     AppComponent,
+    MainLayoutComponent,
+    AuthLayoutComponent,
+    NotFoundComponent,
   ],
   imports: [
     BrowserModule,

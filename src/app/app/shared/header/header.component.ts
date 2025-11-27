@@ -21,10 +21,12 @@ export class HeaderComponent implements OnInit {
     this.isLoggedIn = !!token && !!userStr;
     if (this.isLoggedIn && userStr) {
       this.currentUser = JSON.parse(userStr);
+      console.log('User:', this.currentUser);
       console.log('Current User:', this.currentUser);
       this.initials = this.getInitials(this.currentUser.fullName || '');
     }
   }
+
 
   getInitials(name: string): string {
     const names = name.split(' ');
@@ -40,14 +42,10 @@ export class HeaderComponent implements OnInit {
   }
 
   logout() {
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('currentUser');
-    localStorage.removeItem('salonId');
-    localStorage.removeItem('rememberMe');
-    localStorage.clear();
-    sessionStorage.clear();
-    this.isLoggedIn = false;
-    this.currentUser = null;
+      localStorage.clear();
+      sessionStorage.clear();
+      this.isLoggedIn = false;
+      this.currentUser = null;
     // Optionally navigate to home or login
   }
 }

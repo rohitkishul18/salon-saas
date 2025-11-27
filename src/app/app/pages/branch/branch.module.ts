@@ -17,7 +17,7 @@ import { SharedModule } from '../../shared/shared.module';
     ReactiveFormsModule,
     HttpClientModule,
     BranchRoutingModule,
-    SharedModule  // ✅ Import if you need any shared components
+    SharedModule 
   ],
   providers: [DatePipe]
 })

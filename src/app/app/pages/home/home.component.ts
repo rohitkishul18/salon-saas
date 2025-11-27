@@ -72,6 +72,8 @@ export class HomeComponent implements OnInit, OnDestroy {
 
           this.salon = res.data.salon;
           this.branchData = this.assignRandomImages(res.data.branches || []);
+          console.log("Assigned branch data:", this.branchData);
+          // 12 hrours clock format
           this.stats = res.data.stats || {
             branchCount: 0,
             serviceCount: 0,

@@ -16,7 +16,7 @@ export class ResetPasswordComponent implements OnInit {
   showSuccess = false;
   token: string = '';
   email: string = '';
-  showPassword: boolean = false;  // Added: Property for password visibility toggle
+  showPassword: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -75,7 +75,7 @@ export class ResetPasswordComponent implements OnInit {
         this.isLoading = false;
         this.successMessage = response.message || 'Password reset successful! You can now log in.';
         this.showSuccess = true;
-        this.resetForm.disable(); // Disable form
+        this.resetForm.disable(); 
         // Auto-redirect to login after 3s (optional)
         setTimeout(() => this.router.navigate(['/auth/login']), 3000);
       },

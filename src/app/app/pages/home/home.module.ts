@@ -6,10 +6,9 @@ import { SharedModule } from '../../shared/shared.module';
 @NgModule({
   declarations: [
     HomeComponent
-    // ❌ DON'T declare BranchCardComponent here - it's already in SharedModule
   ],
   imports: [
-    SharedModule,        // ✅ Import SharedModule to use BranchCardComponent
+    SharedModule,      
     HomeRoutingModule
   ]
 })

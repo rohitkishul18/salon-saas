@@ -1,31 +1,41 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard';
+import { AuthLayoutComponent } from './app/layouts/auth-layout/auth-layout.component';
+import { MainLayoutComponent } from './app/layouts/main-layout/main-layout.component';
+import { NotFoundComponent } from './app/pages/not-found/not-found.component';
 
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'home',
-    pathMatch: 'full'
+    component: AuthLayoutComponent,
+    children: [
+      { path: 'auth', loadChildren: () => import('./app/pages/auth/auth.module').then(m => m.AuthModule) },
+      { path: 'not-found', component: NotFoundComponent },
+    ]
   },
   {
-    path: 'home',
-    loadChildren: () => import('./app/pages/home/home.module').then(m => m.HomeModule)
+    path: '',
+    component: MainLayoutComponent,
+    children: [
+      { path: '', redirectTo: '/home', pathMatch: 'full' },
+
+      {
+        path: 'home',
+        loadChildren: () => import('./app/pages/home/home.module').then(m => m.HomeModule),
+      },
+      {
+        path: 'branch/:branchSlug',
+        loadChildren: () => import('./app/pages/branch/branch.module').then(m => m.BranchModule),
+      },
+    ]
   },
-  {
-    path: 'branch/:branchSlug',
-    loadChildren: () => import('./app/pages/branch/branch.module').then(m => m.BranchModule),
-    canActivate: [authGuard]
-  },
-  {
-    path: 'auth',
-    loadChildren: () => import('./app/pages/auth/auth.module').then(m => m.AuthModule)
-  },
-  {
-    path: '**',
-    redirectTo: 'home'
-  }
+  { path: '**', redirectTo: '/not-found' }
 ];
+
+
+
+
 
 @NgModule({
   imports: [

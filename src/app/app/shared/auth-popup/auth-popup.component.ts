@@ -38,7 +38,7 @@ export class AuthPopupComponent implements OnInit, OnDestroy {
         this.showPopup = true;
       }, 3000);
 
-      // Keep checking and showing popup every 30 seconds until user logs in
+      // Keep checking and showing popup every 3 seconds until user logs in
       this.popupInterval = setInterval(() => {
         const currentToken = localStorage.getItem('authToken');
         if (!currentToken) {
