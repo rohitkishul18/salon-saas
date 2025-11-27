@@ -50,7 +50,7 @@ export class ForgotPasswordComponent implements OnInit {
     this.authService.forgotPassword({ email }).subscribe({
       next: (response: any) => {
         this.isLoading = false;
-        this.successMessage = response.message || 'Reset link sent to your email! Check your inbox (including spam).';
+        this.successMessage = response.data.message || 'Password reset link sent to your email.';
         this.showSuccess = true;
         this.forgotForm.get('email')?.disable(); // Disable form on success
       },

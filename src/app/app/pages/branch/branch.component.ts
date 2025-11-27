@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { ApiService } from 'src/app/core/services/api.service';
 
 @Component({
@@ -27,6 +28,9 @@ export class BranchComponent implements OnInit, OnDestroy {
   showErrorModal: boolean = false;
   errorMessage: string = '';
 
+  // Time validation subscription
+  private timeSubscription?: Subscription;
+
   // Banner images for branches
   private branchBannerImages: string[] = [
     'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=1600&h=900&fit=crop',
@@ -34,7 +38,7 @@ export class BranchComponent implements OnInit, OnDestroy {
     'https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=1600&h=900&fit=crop',
     'https://images.unsplash.com/photo-1633681926022-84c23e8cb2d6?w=1600&h=900&fit=crop',
     'https://images.unsplash.com/photo-1522337660859-02fbefca4702?w=1600&h=900&fit=crop',
-    'https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=1600&h=900&fit=crop',
+    'https://images.unsplash.com/photo-1487412947147-5cebfaa6381f?w=1600&h=900&fit=crop',
   ];
 
   private imageRotationInterval: any;
@@ -70,6 +74,7 @@ export class BranchComponent implements OnInit, OnDestroy {
     if (this.imageRotationInterval) {
       clearInterval(this.imageRotationInterval);
     }
+    this.timeSubscription?.unsubscribe();
   }
 
   loadBranchData() {
@@ -114,6 +119,9 @@ export class BranchComponent implements OnInit, OnDestroy {
 
           console.log('Processed Branch Data:', this.branchData);
           console.log('Services:', this.services);
+
+          // Setup time validation after loading branch data
+          this.setupTimeValidation();
         } else {
           console.error('API returned success: false');
           this.showError('Failed to load branch details. Please try again.');
@@ -129,25 +137,84 @@ export class BranchComponent implements OnInit, OnDestroy {
     });
   }
 
+  private setupTimeValidation(): void {
+    if (!this.branchData?.openingHours) return;
 
- formatOpeningHours(openingHours: string) {
-  const [from, to] = openingHours.split(' - ');
+    this.timeSubscription = this.bookingForm.get('scheduledAt')!.valueChanges.subscribe(value => {
+      if (!value) return;
 
-  return {
-    from: this.convertTo12Hour(from),
-    to: this.convertTo12Hour(to)
-  };
-}
+      const scheduledDate = new Date(value);
+      const scheduledTime = scheduledDate.getHours() * 60 + scheduledDate.getMinutes();
 
-convertTo12Hour(time: string): string {
-  const [hour, minute] = time.split(':').map(Number);
+      const openTime = this.parseTime(this.branchData.openingHours.from);
+      const closeTime = this.parseTime(this.branchData.openingHours.to);
 
-  let suffix = hour >= 12 ? 'PM' : 'AM';
-  let convertedHour = hour % 12 || 12;
+      const isValidTime = scheduledTime >= openTime && scheduledTime <= closeTime;
 
-  return `${convertedHour} ${suffix}`;
-}
+      const control = this.bookingForm.get('scheduledAt');
+      const currentErrors = control?.errors || {};
 
+      if (isValidTime) {
+        delete currentErrors['invalidTime'];
+        control?.setErrors(Object.keys(currentErrors).length > 0 ? currentErrors : null);
+      } else {
+        currentErrors['invalidTime'] = true;
+        control?.setErrors(currentErrors);
+      }
+    });
+  }
+
+  private parseTime(timeStr: string): number {
+    const [time, period] = timeStr.split(' ');
+    const parts = time.split(':');
+    const hours = parseInt(parts[0], 10);
+    const minutes = parts[1] ? parseInt(parts[1], 10) : 0;
+    let totalMinutes = hours * 60 + minutes;
+
+    if (period === 'PM' && hours !== 12) {
+      totalMinutes += 12 * 60;
+    } else if (period === 'AM' && hours === 12) {
+      totalMinutes -= 12 * 60;
+    }
+
+    return totalMinutes;
+  }
+
+  formatOpeningHours(openingHours: string) {
+    const [from, to] = openingHours.split(' - ');
+
+    return {
+      from: this.convertTo12Hour(from),
+      to: this.convertTo12Hour(to)
+    };
+  }
+
+  convertTo12Hour(time: string): string {
+    const [hourStr, minuteStr] = time.split(':');
+    const hour = parseInt(hourStr, 10);
+    const minute = minuteStr ? parseInt(minuteStr, 10) : 0;
+    let suffix = hour >= 12 ? 'PM' : 'AM';
+    let convertedHour = hour % 12 || 12;
+
+    return `${convertedHour}:${minute.toString().padStart(2, '0')} ${suffix}`;
+  }
+
+  isOpen(): boolean {
+    if (!this.branchData?.openingHours) return true;
+
+    try {
+      const now = new Date();
+      const currentTime = now.getHours() * 60 + now.getMinutes();
+
+      const openTime = this.parseTime(this.branchData.openingHours.from);
+      const closeTime = this.parseTime(this.branchData.openingHours.to);
+
+      return currentTime >= openTime && currentTime <= closeTime;
+    } catch (error) {
+      console.error('Error parsing opening hours:', error);
+      return true;
+    }
+  }
 
   private getRandomBannerImage(): string {
     const randomIndex = Math.floor(
@@ -276,36 +343,5 @@ convertTo12Hour(time: string): string {
     const serviceId = this.bookingForm.get('serviceId')?.value;
     const service = this.services.find((s) => s._id === serviceId);
     return service ? service.name : 'Unknown Service';
-  }
-
-  isOpen(): boolean {
-    if (!this.branchData?.openingHours) return true;
-
-    try {
-      const now = new Date();
-      const currentTime = now.getHours() * 60 + now.getMinutes();
-
-      const parseTime = (timeStr: string): number => {
-        const [time, period] = timeStr.split(' ');
-        const [hours, minutes] = time.split(':').map(Number);
-        let totalMinutes = hours * 60 + minutes;
-
-        if (period === 'PM' && hours !== 12) {
-          totalMinutes += 12 * 60;
-        } else if (period === 'AM' && hours === 12) {
-          totalMinutes -= 12 * 60;
-        }
-
-        return totalMinutes;
-      };
-
-      const openTime = parseTime(this.branchData.openingHours.from);
-      const closeTime = parseTime(this.branchData.openingHours.to);
-
-      return currentTime >= openTime && currentTime <= closeTime;
-    } catch (error) {
-      console.error('Error parsing opening hours:', error);
-      return true;
-    }
   }
 }

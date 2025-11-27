@@ -64,6 +64,10 @@ export class LoginComponent implements OnInit {
     return this.loginForm.get('password');
   }
 
+  get rememberMe() {
+    return this.loginForm.get('rememberMe');
+  }
+
   // Better validation messages
   getEmailError(): string {
     if (this.email?.touched || this.email?.dirty) {
@@ -109,10 +113,13 @@ export class LoginComponent implements OnInit {
           localStorage.setItem('salonId', response.data.customer.salonId);
 
           // Remember Me
-          if (rememberMe) localStorage.setItem('rememberMe', 'true');
-          else localStorage.removeItem('rememberMe');
-
-          this.router.navigate(['/home']);
+          if (rememberMe) {
+            localStorage.setItem('rememberMe', 'true');
+             this.router.navigate(['/home']);
+          } else {
+            localStorage.removeItem('rememberMe');
+            this.errorMessage = 'Remember Me not selected. Session will not be persisted.';
+          }
         }
       },
       error: (err) => {
