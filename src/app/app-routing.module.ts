@@ -7,15 +7,12 @@ import { NotFoundComponent } from './app/pages/not-found/not-found.component';
 import { HomeComponent } from './app/pages/home/home.component';
 
 const routes: Routes = [
-
-  // 🔹 Auth Layout
   {
     path: 'auth',
     component: AuthLayoutComponent,
     loadChildren: () => import('./app/pages/auth/auth.module').then(m => m.AuthModule)
   },
 
-  // 🔹 Main Layout
   {
     path: '',
     component: MainLayoutComponent,
@@ -35,11 +32,7 @@ const routes: Routes = [
       },
     ]
   },
-
-  // 🔹 Standalone Not Found
   { path: 'not-found', component: NotFoundComponent },
-
-  // 🔹 Not Found Catch All
   { path: '**', redirectTo: 'not-found' },
 ];
 

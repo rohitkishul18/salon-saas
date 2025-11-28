@@ -25,17 +25,19 @@ registerLocaleData(en);
   ],
   imports: [
     BrowserModule,
-    HttpClientModule,      // ✅ Add once at root level
-    SharedModule,          // ✅ Import shared components
-    AppRoutingModule, FormsModule, BrowserAnimationsModule       // ⚠️ Must be LAST for lazy loading to work
+    HttpClientModule,
+    SharedModule,
+    AppRoutingModule,
+    FormsModule,
+    BrowserAnimationsModule,
   ],
   providers: [
     {
       provide: HTTP_INTERCEPTORS,
       useClass: TokenInterceptor,
-      multi: true
+      multi: true,
     },
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

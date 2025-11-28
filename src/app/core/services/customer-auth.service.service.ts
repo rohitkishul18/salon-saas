@@ -21,7 +21,7 @@ export class CustomerAuthService {
 }
 
 forgotPassword(data: { email: string }): Observable<any> {
-    return this.http.post(`${this.API_URL}/auth/forgot-password`, data); // Now uses 'data' correctly
+    return this.http.post(`${this.API_URL}/auth/forgot-password`, data); 
   }
 
   // Uncomment and fix resetPassword similarly when ready
