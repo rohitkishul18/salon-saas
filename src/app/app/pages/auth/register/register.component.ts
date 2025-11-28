@@ -167,7 +167,7 @@ export class RegisterComponent implements OnInit {
       // Call the API
       this.authService.register(registerData).subscribe({
         next: (response: any) => {
-          console.log('Registration successful:', response);
+          // console.log('Registration successful:', response);
           
           // Handle successful registration
           if (response?.success && response?.data) {
@@ -192,7 +192,7 @@ export class RegisterComponent implements OnInit {
           this.isLoading = false;
         },
         error: (error: any) => {
-          console.error('Registration error:', error);
+          // console.error('Registration error:', error);
           
           // Handle error response
           if (error.error?.message) {
@@ -212,7 +212,7 @@ export class RegisterComponent implements OnInit {
           this.isLoading = false;
         },
         complete: () => {
-          console.log('Registration request completed');
+          // console.log('Registration request completed');
         }
       });
     }

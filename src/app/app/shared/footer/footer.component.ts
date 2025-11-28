@@ -36,7 +36,7 @@ export class FooterComponent implements OnInit {
   private fetchSalonDetails(): void {
     this.Apiservice.getSalonDetails().subscribe({
       next: (response: any) => {
-        console.log('Salon details response:', response);
+        // console.log('Salon details response:', response);
         if (response?.success && response?.data) {
           const salon = response.data as Salon;
           this.salon = salon;

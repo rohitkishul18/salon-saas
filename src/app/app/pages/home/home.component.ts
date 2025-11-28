@@ -68,11 +68,11 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.api.getHomeData(slug).subscribe({
       next: (res: any) => {
         if (res.success) {
-          console.log("Home API response:", res);
+          // console.log("Home API response:", res);
 
           this.salon = res.data.salon;
           this.branchData = this.assignRandomImages(res.data.branches || []);
-          console.log("Assigned branch data:", this.branchData);
+          // console.log("Assigned branch data:", this.branchData);
           // 12 hrours clock format
           this.stats = res.data.stats || {
             branchCount: 0,
@@ -81,7 +81,7 @@ export class HomeComponent implements OnInit, OnDestroy {
             reviewCount: 0
           };
 
-          console.log("Branches with images:", this.branchData);
+          // console.log("Branches with images:", this.branchData);
         }
       },
       error: (err) => {
@@ -115,7 +115,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   // Rotate banner image
   private rotateBannerImage(): void {
     this.bannerImage = this.getRandomImage(this.bannerImages);
-    console.log("Banner image set to:", this.bannerImage);
+    // console.log("Banner image set to:", this.bannerImage);
   }
 
   // Start automatic image rotation every minute
@@ -129,7 +129,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   handleVisitBranch(slug: string): void {
-    console.log("Navigating to branch:", slug);
+    // console.log("Navigating to branch:", slug);
     this.router.navigate(['/branch', slug]);
   }
 

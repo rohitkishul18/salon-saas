@@ -82,10 +82,10 @@ export class BranchComponent implements OnInit, OnDestroy {
 
     this.api.getBranchBySlug(this.branchSlug).subscribe({
       next: (res: any) => {
-        console.log('Branch API Response:', res);
+        // console.log('Branch API Response:', res);
 
         if (res.success) {
-          console.log('Branch Data:', res.data.branch);
+          // console.log('Branch Data:', res.data.branch);
           this.branchData = res.data.branch;
           this.salonData = res.data.salon;
           this.services = res.data.services || [];
@@ -116,9 +116,6 @@ export class BranchComponent implements OnInit, OnDestroy {
               this.branchData.openingHours = { from: '9 AM', to: '9 PM' };
             }
           }
-
-          console.log('Processed Branch Data:', this.branchData);
-          console.log('Services:', this.services);
 
           // Setup time validation after loading branch data
           this.setupTimeValidation();
@@ -240,7 +237,7 @@ export class BranchComponent implements OnInit, OnDestroy {
 
   submitBooking() {
     if (this.bookingForm.invalid) {
-      console.log('Booking form is invalid');
+      // console.log('Booking form is invalid');
       Object.keys(this.bookingForm.controls).forEach((key) => {
         this.bookingForm.get(key)?.markAsTouched();
       });
@@ -258,13 +255,13 @@ export class BranchComponent implements OnInit, OnDestroy {
       notes: this.bookingForm.value.notes || '',
     };
 
-    console.log('Submitting booking with data:', bookingData);
+    // console.log('Submitting booking with data:', bookingData);
 
     this.isSubmitting = true;
 
     this.api.createBooking(bookingData).subscribe({
       next: (response: any) => {
-        console.log('Booking created successfully:', response);
+        // console.log('Booking created successfully:', response);
         this.isSubmitting = false;
 
         const selectedService = this.services.find(

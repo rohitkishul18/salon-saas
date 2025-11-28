@@ -21,8 +21,8 @@ export class HeaderComponent implements OnInit {
     this.isLoggedIn = !!token && !!userStr;
     if (this.isLoggedIn && userStr) {
       this.currentUser = JSON.parse(userStr);
-      console.log('User:', this.currentUser);
-      console.log('Current User:', this.currentUser);
+      // console.log('User:', this.currentUser);
+      // console.log('Current User:', this.currentUser);
       this.initials = this.getInitials(this.currentUser.fullName || '');
     }
   }
