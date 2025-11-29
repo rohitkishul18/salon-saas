@@ -29,6 +29,7 @@ const routes: Routes = [
         path: 'branch/:branchSlug',
         loadChildren: () =>
           import('./app/pages/branch/branch.module').then(m => m.BranchModule),
+         canActivate: [authGuard] 
       },
     ]
   },
