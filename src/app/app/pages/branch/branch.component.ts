@@ -1,7 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { Subscription } from 'rxjs';
 import { ApiService } from 'src/app/core/services/api.service';
 
 @Component({
@@ -27,9 +26,6 @@ export class BranchComponent implements OnInit, OnDestroy {
   // Error Modal State
   showErrorModal: boolean = false;
   errorMessage: string = '';
-
-  // Time validation subscription
-  private timeSubscription?: Subscription;
 
   // Banner images for branches
   private branchBannerImages: string[] = [
@@ -74,7 +70,6 @@ export class BranchComponent implements OnInit, OnDestroy {
     if (this.imageRotationInterval) {
       clearInterval(this.imageRotationInterval);
     }
-    this.timeSubscription?.unsubscribe();
   }
 
   loadBranchData() {
@@ -132,28 +127,31 @@ export class BranchComponent implements OnInit, OnDestroy {
   private setupTimeValidation(): void {
     if (!this.branchData?.openingHours) return;
 
-    this.timeSubscription = this.bookingForm.get('scheduledAt')!.valueChanges.subscribe(value => {
-      if (!value) return;
+    const scheduledAtControl = this.bookingForm.get('scheduledAt');
+    if (scheduledAtControl) {
+      scheduledAtControl.setValidators([Validators.required, this.timeValidator.bind(this)]);
+      scheduledAtControl.updateValueAndValidity();
+    }
+  }
 
-      const scheduledDate = new Date(value);
-      const scheduledTime = scheduledDate.getHours() * 60 + scheduledDate.getMinutes();
+  private timeValidator(control: AbstractControl): ValidationErrors | null {
+    if (!control.value || !this.branchData?.openingHours) {
+      return null;
+    }
 
-      const openTime = this.parseTime(this.branchData.openingHours.from);
-      const closeTime = this.parseTime(this.branchData.openingHours.to);
+    const scheduledDate = new Date(control.value);
+    const scheduledTime = scheduledDate.getHours() * 60 + scheduledDate.getMinutes();
 
-      const isValidTime = scheduledTime >= openTime && scheduledTime <= closeTime;
+    const openTime = this.parseTime(this.branchData.openingHours.from);
+    const closeTime = this.parseTime(this.branchData.openingHours.to);
 
-      const control = this.bookingForm.get('scheduledAt');
-      const currentErrors = control?.errors || {};
+    const isValidTime = scheduledTime >= openTime && scheduledTime <= closeTime;
 
-      if (isValidTime) {
-        delete currentErrors['invalidTime'];
-        control?.setErrors(Object.keys(currentErrors).length > 0 ? currentErrors : null);
-      } else {
-        currentErrors['invalidTime'] = true;
-        control?.setErrors(currentErrors);
-      }
-    });
+    if (!isValidTime) {
+      return { invalidTime: true };
+    }
+
+    return null;
   }
 
   private parseTime(timeStr: string): number {
@@ -172,8 +170,22 @@ export class BranchComponent implements OnInit, OnDestroy {
     return totalMinutes;
   }
 
-  formatOpeningHours(openingHours: string) {
-    const [from, to] = openingHours.split(' - ');
+  formatOpeningHours(openingHours: any) {
+    // Handle both string and object formats for robustness
+    let from: string;
+    let to: string;
+
+    if (typeof openingHours === 'string') {
+      const [f, t] = openingHours.split(' - ');
+      from = f?.trim();
+      to = t?.trim();
+    } else if (openingHours && typeof openingHours === 'object') {
+      from = openingHours.from || openingHours.open || '';
+      to = openingHours.to || openingHours.close || '';
+    } else {
+      from = '09:00';
+      to = '21:00';
+    }
 
     return {
       from: this.convertTo12Hour(from),
@@ -182,9 +194,10 @@ export class BranchComponent implements OnInit, OnDestroy {
   }
 
   convertTo12Hour(time: string): string {
-    const [hourStr, minuteStr] = time.split(':');
+    // Handle both with and without minutes, and 24-hour format
+    let [hourStr, minuteStr = '00'] = time.split(':');
     const hour = parseInt(hourStr, 10);
-    const minute = minuteStr ? parseInt(minuteStr, 10) : 0;
+    const minute = parseInt(minuteStr, 10);
     let suffix = hour >= 12 ? 'PM' : 'AM';
     let convertedHour = hour % 12 || 12;
 
