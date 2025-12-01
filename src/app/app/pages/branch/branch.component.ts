@@ -118,7 +118,7 @@ export class BranchComponent implements OnInit, OnDestroy {
           }
 
           // Setup time validation after loading branch data
-          this.setupTimeValidation();
+          this.setupTimeValidation(); 
         } else {
           console.error('API returned success: false');
           this.showError('Failed to load branch details. Please try again.');
@@ -196,22 +196,22 @@ export class BranchComponent implements OnInit, OnDestroy {
     return `${convertedHour}:${minute.toString().padStart(2, '0')} ${suffix}`;
   }
 
-  isOpen(): boolean {
-    if (!this.branchData?.openingHours) return true;
+  // isOpen(): boolean {
+  //   if (!this.branchData?.openingHours) return true;
 
-    try {
-      const now = new Date();
-      const currentTime = now.getHours() * 60 + now.getMinutes();
+  //   try {
+  //     const now = new Date();
+  //     const currentTime = now.getHours() * 60 + now.getMinutes();
 
-      const openTime = this.parseTime(this.branchData.openingHours.from);
-      const closeTime = this.parseTime(this.branchData.openingHours.to);
+  //     const openTime = this.parseTime(this.branchData.openingHours.from);
+  //     const closeTime = this.parseTime(this.branchData.openingHours.to);
 
-      return currentTime >= openTime && currentTime <= closeTime;
-    } catch (error) {
-      console.error('Error parsing opening hours:', error);
-      return true;
-    }
-  }
+  //     return currentTime >= openTime && currentTime <= closeTime;
+  //   } catch (error) {
+  //     console.error('Error parsing opening hours:', error);
+  //     return true;
+  //   }
+  // }
 
   private getRandomBannerImage(): string {
     const randomIndex = Math.floor(
